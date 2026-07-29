@@ -130,6 +130,17 @@ typedef struct{
 
 }RCC_Regdef_t;
 
+typedef struct{
+
+	__vo uint32_t IMR;				//offset 0x00
+	__vo uint32_t EMR;				//offset 0x04
+	__vo uint32_t RTSR;				//offset 0x08
+	__vo uint32_t FTSR;				//offset 0x0C
+	__vo uint32_t SWIER;			//offset 0x10
+	__vo uint32_t PR;				//offset 0x14
+
+}EXTI_Regdef_t;
+
 /*
  * Peripheral defintions base addresses typecasted to xxx_Regdef_t
  */
@@ -145,6 +156,7 @@ typedef struct{
 #define GPIOI					((GPIO_Regdef_t*)GPIOI_BASEADDR)
 
 #define RCC						((RCC_Regdef_t*)RCC_BASEADDR)
+#define EXTI					((EXTI_Regdef_t*)EXTI_BASEADDR)
 
 /*
  * Clock enable and disable macros for GPIOx peripherals

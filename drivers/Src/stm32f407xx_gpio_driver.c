@@ -2,7 +2,7 @@
  * stm32f407xx_gpio_driver.c
  *
  *  Created on: Jul 26, 2026
- *      Author: LEGION
+ *      Author: Ariq
  */
 
 #include "stm32f407xx_gpio_driver.h"
@@ -109,7 +109,27 @@ void GPIO_Init(GPIO_Handle_t *pGPIOHandle)
 		pGPIOHandle->pGPIOx->MODER |= temp;		//set register
 	}else
 	{
-		//Code later for interrupt mode
+		if(pGPIOHandle->GPIO_PinConfig.GPIO_PinMode == GPIO_MODE_IT_FT){
+			//configure the falling edge trigger
+
+			EXTI->RTSR &= ~(1 << pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber); 	//clear the register for RTSR first
+			EXTI->FTSR |= (1 << pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber);	//set FTSR register
+
+		}else if(pGPIOHandle->GPIO_PinConfig.GPIO_PinMode == GPIO_MODE_IT_RT){
+			//configure the rising edge trigger
+
+			EXTI->FTSR &= ~(1 << pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber); 	//clear the register for FTSR first
+			EXTI->RTSR |= (1 << pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber);	//set RTSR register
+
+		}else if(pGPIOHandle->GPIO_PinConfig.GPIO_PinMode == GPIO_MODE_IT_FT_RT){
+			//configure both the rising and falling edge trigger
+
+			EXTI->FTSR |= (1 << pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber); 	//set FTSR first
+			EXTI->RTSR |= (1 << pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber);	//set RTSR register
+
+		}
+
+
 	}
 	temp = 0;
 
