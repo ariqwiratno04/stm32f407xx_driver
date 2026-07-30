@@ -141,6 +141,17 @@ typedef struct{
 
 }EXTI_Regdef_t;
 
+typedef struct{
+
+	__vo uint32_t MEMRMP;			//offset 0x00
+	__vo uint32_t PMC;				//offset 0x04
+	__vo uint32_t EXTICR[4];		//offset 0x08-0x14
+	uint32_t RESERVED0;				//offset 0x18
+	uint32_t RESERVED1;				//offset 0x1C
+	__vo uint32_t CMPCR;			//offset 0x20
+
+} SYSCFG_RegDef_t;
+
 /*
  * Peripheral defintions base addresses typecasted to xxx_Regdef_t
  */
@@ -157,6 +168,7 @@ typedef struct{
 
 #define RCC						((RCC_Regdef_t*)RCC_BASEADDR)
 #define EXTI					((EXTI_Regdef_t*)EXTI_BASEADDR)
+#define SYSCFG					((SYSCFG_RegDef_t*)SYSCFG_BASEADDR)
 
 /*
  * Clock enable and disable macros for GPIOx peripherals
@@ -226,6 +238,18 @@ typedef struct{
 #define SYSCFG_PCLK_EN()		(RCC->APB2ENR |= (1 << 14))
 #define SYSCFG_PCLK_DI()		(RCC->APB2ENR &= ~(1 << 14))
 
+/*
+ * Macros for setting GPIOx base address
+ */
+#define GPIO_BASEADDR_TO_CODE(x)	((x == GPIOA) ? 0 :\
+									(x == GPIOB) ? 1 :\
+									(x == GPIOC) ? 2 :\
+									(x == GPIOD) ? 3 :\
+									(x == GPIOE) ? 4 :\
+									(x == GPIOF) ? 5 :\
+									(x == GPIOG) ? 6 :\
+									(x == GPIOH) ? 7 :\
+									(x == GPIOI) ? 8 :0)
 
 /*
  * General purpose macros

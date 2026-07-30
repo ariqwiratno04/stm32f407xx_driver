@@ -124,11 +124,22 @@ void GPIO_Init(GPIO_Handle_t *pGPIOHandle)
 		}else if(pGPIOHandle->GPIO_PinConfig.GPIO_PinMode == GPIO_MODE_IT_FT_RT){
 			//configure both the rising and falling edge trigger
 
-			EXTI->FTSR |= (1 << pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber); 	//set FTSR first
+			EXTI->FTSR |= (1 << pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber); 	//set FTSR register
 			EXTI->RTSR |= (1 << pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber);	//set RTSR register
 
 		}
 
+		//2. configure the GPIO port selection in SYSCFG_EXTICR
+			uint8_t temp1, temp2, portcode;
+			temp1 = (pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber) / 4;
+			temp2 = (pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber) % 4;
+			portcode = GPIO_BASEADDR_TO_CODE(pGPIOHandle->pGPIOx);
+
+			SYSCFG_PCLK_EN();
+			SYSCFG->EXTICR[temp1] = portcode << (temp2 * 4);
+
+		//3. enable the EXTI interrupt delivery using IMR
+			EXTI->IMR |= (1 << pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber);
 
 	}
 	temp = 0;
