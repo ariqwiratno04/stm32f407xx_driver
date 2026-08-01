@@ -11,6 +11,23 @@
 #include <stdint.h>
 
 #define __vo volatile 			//volatile variable
+
+/*
+ * Arm Cortex M4 Processor NVIC Register Address
+ */
+#define NVIC_ISER0				(__vo uint32_t*)0xE000E100
+#define NVIC_ISER1				(__vo uint32_t*)0xE000E104
+#define NVIC_ISER2				(__vo uint32_t*)0xE000E108
+#define NVIC_ISER3				(__vo uint32_t*)0xE000E10C
+
+#define NVIC_ICER0				(__vo uint32_t*)0xE000E180
+#define NVIC_ICER1				(__vo uint32_t*)0xE000E184
+#define NVIC_ICER2				(__vo uint32_t*)0xE000E188
+#define NVIC_ICER3				(__vo uint32_t*)0xE000E18C
+
+#define NVIC_PR_BASE_ADDR		(__vo uint32_t*)0xE000E400
+#define NO_PR_BITS_IMPLEMENTED	4
+
 /*
  * Base address of Flash and SRAM memories
  */
@@ -250,6 +267,17 @@ typedef struct{
 									(x == GPIOG) ? 6 :\
 									(x == GPIOH) ? 7 :\
 									(x == GPIOI) ? 8 :0)
+
+/*
+ * Macros for IRQ numbers and EXTI for STM32F407xx (refer to the vector table)
+ */
+#define IRQ_NO_EXTI0			6
+#define IRQ_NO_EXTI1			7
+#define IRQ_NO_EXTI2			8
+#define IRQ_NO_EXTI3			9
+#define IRQ_NO_EXTI4			10
+#define IRQ_NO_EXTI9_5			23
+#define IRQ_NO_EXTI15_10		40
 
 /*
  * General purpose macros

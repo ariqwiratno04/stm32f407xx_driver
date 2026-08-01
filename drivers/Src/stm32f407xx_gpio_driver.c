@@ -314,8 +314,80 @@ void GPIO_ToggleOutputPin(GPIO_Regdef_t *pGPIOx, uint8_t PinNumber)
 	pGPIOx->ODR ^= (1 << PinNumber);		//Toggle the output pin by using XOR operation
 }
 
-/*
- * Interrupt
+/******************************
+ * @fn			: GPIO_IRQInterruptConfig
+ * @brief		: Configuration init for interrupt IRQ
+ *
+ * @param[0]	: IRQ Number
+ * @param[1]	: Enable or disable
+ *
+ * @return		: none
+ * @Note		: none
+ *
+ *
+ * Interrupt configuration (please refer to the Cortex M4 Reference Manual)
  */
-void GPIO_IRQConfig(uint8_t IRQNumber, uint8_t IRQPriority, uint8_t EnorDi);
+void GPIO_IRQInterruptConfig(uint8_t IRQNumber, uint8_t EnorDi)
+{
+	if(EnorDi == ENABLE){
+		if(IRQNumber <= 31){
+
+			//program to ISER0 Register to enable
+			*NVIC_ISER0 |= (1 << IRQNumber);
+
+		}else if(IRQNumber > 31 && IRQNumber < 64){
+
+			//program to ISER1 Register to enable
+			*NVIC_ISER1 |= (1 << (IRQNumber % 32));
+
+		}else if(IRQNumber >= 64 && IRQNumber < 96){
+
+			//program to ISER2 Register to enable
+			*NVIC_ISER2 |= (1 << (IRQNumber % 64));
+		}
+	}else{
+		if(IRQNumber <= 31){
+
+			//program to ICER0 Register to enable
+			*NVIC_ICER0 |= (1 << IRQNumber);
+
+
+		}else if(IRQNumber > 31 && IRQNumber < 64){
+
+			//program to ICER1 Register to enable
+			*NVIC_ICER1 |= (1 << IRQNumber);
+
+		}else if(IRQNumber >= 64 && IRQNumber < 96){
+
+			//program to ICER2 Register to enable
+			*NVIC_ICER2 |= (1 << IRQNumber);
+
+		}
+	}
+
+}
+
+/******************************
+ * @fn			: GPIO_IRQPriorityConfig
+ * @brief		: Configuration init for interrupt IRQ
+ *
+ * @param[0]	: IRQ Number
+ * @param[1]	: IRQ Priority
+ *
+ * @return		: none
+ * @Note		: none
+ *
+ */
+void GPIO_IRQPriorityConfig(uint8_t IRQNumber, uint8_t IRQPriority)
+{
+	//Calculate the ipr register from the IRQ number
+	uint8_t iprx = IRQNumber / 4;
+	uint8_t iprx_section = IRQNumber % 4;
+
+	uint8_t	shift_amount = (8 * iprx_section) + (8 - NO_PR_BITS_IMPLEMENTED);
+
+	*(NVIC_PR_BASE_ADDR + (iprx * 4)) |= (IRQPriority << shift_amount);
+}
+
+
 void GPIO_IRQHandling(uint8_t PinNumber);
