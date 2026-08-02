@@ -28,6 +28,7 @@
 #define NVIC_PR_BASE_ADDR		(__vo uint32_t*)0xE000E400
 #define NO_PR_BITS_IMPLEMENTED	4
 
+
 /*
  * Base address of Flash and SRAM memories
  */

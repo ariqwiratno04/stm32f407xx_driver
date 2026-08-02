@@ -378,7 +378,7 @@ void GPIO_IRQInterruptConfig(uint8_t IRQNumber, uint8_t EnorDi)
  * @Note		: none
  *
  */
-void GPIO_IRQPriorityConfig(uint8_t IRQNumber, uint8_t IRQPriority)
+void GPIO_IRQPriorityConfig(uint8_t IRQNumber, uint32_t IRQPriority)
 {
 	//Calculate the ipr register from the IRQ number
 	uint8_t iprx = IRQNumber / 4;
@@ -386,8 +386,25 @@ void GPIO_IRQPriorityConfig(uint8_t IRQNumber, uint8_t IRQPriority)
 
 	uint8_t	shift_amount = (8 * iprx_section) + (8 - NO_PR_BITS_IMPLEMENTED);
 
-	*(NVIC_PR_BASE_ADDR + (iprx * 4)) |= (IRQPriority << shift_amount);
+	*(NVIC_PR_BASE_ADDR + iprx) |= (IRQPriority << shift_amount);
 }
 
+/******************************
+ * @fn			: GPIO_IRQHandling
+ * @brief		: Configuration init for interrupt IRQ
+ *
+ * @param[0]	: Pin Number GPIO
+ *
+ * @return		: none
+ * @Note		: none
+ *
+ */
+void GPIO_IRQHandling(uint8_t PinNumber)
+{
+	//clear the EXTI PR Register correspond to the pin number
+	if(EXTI->PR & (1 << PinNumber)){
 
-void GPIO_IRQHandling(uint8_t PinNumber);
+		//clear
+		EXTI->PR |= (1 << PinNumber);
+	}
+}
