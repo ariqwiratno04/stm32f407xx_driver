@@ -109,6 +109,20 @@ typedef struct{
 
 typedef struct{
 
+	__vo uint32_t CR1;				//offset 0x00
+	__vo uint32_t CR2;				//offset 0x04
+	__vo uint32_t SR;				//offset 0x08
+	__vo uint32_t DR;				//offset 0x0C
+	__vo uint32_t CRCPR;			//offset 0x10
+	__vo uint32_t RXCRCR;			//offset 0x14
+	__vo uint32_t TXCRCR;			//offset 0x18
+	__vo uint32_t I2SCFGR;			//offset 0x1C
+	__vo uint32_t I2SPR;			//offset 0x20
+
+}SPI_Regdef_t;
+
+typedef struct{
+
 	__vo uint32_t CR;				//offset 0x00
 	__vo uint32_t PLLCFGR;			//offset 0x04
 	__vo uint32_t CFGR;				//offset 0x08
@@ -188,6 +202,11 @@ typedef struct{
 #define EXTI					((EXTI_Regdef_t*)EXTI_BASEADDR)
 #define SYSCFG					((SYSCFG_RegDef_t*)SYSCFG_BASEADDR)
 
+#define SPI1					((SPI_Regdef_t*)SPI1_BASEADDR)
+#define SPI2					((SPI_Regdef_t*)SPI2_BASEADDR)
+#define SPI3					((SPI_Regdef_t*)SPI3_BASEADDR)
+#define SPI4					((SPI_Regdef_t*)SPI4_BASEADDR)
+
 /*
  * Clock enable and disable macros for GPIOx peripherals
  */
@@ -243,6 +262,15 @@ typedef struct{
  */
 #define SPI1_PCLK_EN()			(RCC->APB2ENR |= (1 << 12))
 #define SPI1_PCLK_DI()			(RCC->APB2ENR &= ~(1 << 12))
+
+#define SPI2_PCLK_EN()			(RCC->APB1ENR |= (1 << 14))
+#define SPI2_PCLK_DI()			(RCC->APB1ENR &= ~(1 << 14))
+
+#define SPI3_PCLK_EN()			(RCC->APB1ENR |= (1 << 15))
+#define SPI3_PCLK_DI()			(RCC->APB1ENR &= ~(1 << 15))
+
+#define SPI4_PCLK_EN()			(RCC->APB2ENR |= (1 << 13))
+#define SPI4_PCLK_DI()			(RCC->APB2ENR &= ~(1 << 13))
 
 /*
  * Clock enable and disable macros for USARTx peripherals
