@@ -8,7 +8,7 @@ This project focuses on manipulating memory-mapped registers directly using C po
 
 - **Register-Level Control:** Writing driver code by referencing the STM32F407 Reference Manual (RM0090) and Datasheet.
 - **Clock Tree Configuration:** Manually configuring the Reset and Clock Control (RCC) block, PLL, and peripheral buses (AHB/APB).
-- **Custom Peripheral Drivers:** Developing bare-metal drivers for GPIO, EXTI, Timers, USART, ADC, and DMA.
+- **Custom Peripheral Drivers:** Developing bare-metal drivers for GPIO, SPI, and other peripherals (still figuring out what to add).
 - **On-Chip Debugging:** Utilizing STM32CubeIDE with ST-LINK/V2 for live register inspection, breakpoints, and flash memory analysis.
 
 ## 🛠️ Hardware Requirements
