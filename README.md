@@ -1,8 +1,8 @@
 # STM32F407 Bare-Metal Programming
 
-A hands-on reference repository for learning low-level, bare-metal C programming on the **STM32F407G-DISC1 (STM32F4 Discovery)** board using **STM32CubeIDE**.
+A repository for me learning low-level, bare-metal C programming on the **STM32F407G-DISC1 (STM32F4 Discovery)** board using **STM32CubeIDE**.
 
-This project focuses on manipulating memory-mapped registers directly using C pointers and CMSIS device headers, gaining a ground-up understanding of the ARM Cortex-M4 architecture and STM32 peripherals without high-level abstraction libraries like HAL or LL.
+This project focuses on manipulating memory-mapped registers directly using C pointers, gaining a ground-up understanding of the ARM Cortex-M4 architecture and STM32 peripherals without high-level abstraction libraries like HAL or LL.
 
 ## 🎯 Objectives & Focus Areas
 
