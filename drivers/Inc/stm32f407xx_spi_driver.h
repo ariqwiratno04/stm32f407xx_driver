@@ -15,20 +15,20 @@
  */
 typedef struct{
 
-	uint8_t SPI_DeviceMode;
-	uint8_t SPI_BUSConfig;
-	uint8_t SPISclkSpeed;
-	uint8_t SPI_DFF;
-	uint8_t SPI_CPOL;
-	uint8_t SPI_CPHA;
-	uint8_t SPI_SSM;
+	uint8_t SPI_DeviceMode;				//Possible values are @SPI_DEVICE_MODE
+	uint8_t SPI_BuSConfig;				//Possible values are @SPI_BUS_CONFIG
+	uint8_t SPISclkSpeed;				//Possible values are @SPI_SCLK_SPEED
+	uint8_t SPI_DFF;					//Possible values are @SPI_DFF
+	uint8_t SPI_CPOL;					//Possible values are @SPI_CPOL
+	uint8_t SPI_CPHA;					//Possible values are @SPI_CPHA
+	uint8_t SPI_SSM;					//Possible values are @SPI_SSM
 
 }SPI_PinConfig_t;
 
 typedef struct{
 
 	SPI_Regdef_t	*pSPIx;
-	SPI_Config_t	SPIConfig;
+	SPI_PinConfig_t	SPIConfig;
 
 }SPI_Handle_t;
 
@@ -64,6 +64,55 @@ void SPI_IRQHandling(SPI_Handle_t *pHandle);
 /*
  * Other
  */
+
+/*
+ * @SPI_DEVICE_MODE
+ */
+#define SPI_DEVICE_MODE_SLAVE			0			//Slave mode
+#define SPI_DEVICE_MODE_MASTER			1			//Master mode
+
+/*
+ *  @SPI_BUS_CONFIG
+ */
+#define	SPI_BUS_CONFIG FD				0			//Full duplex
+#define SPI_BUS_CONFIG_HD				1			//Half duplex
+#define SPI_BUS_CONFIG_S_RX				2			//Simplex RX only
+
+/*
+ * @SPI_SCLK_SPEED
+ */
+#define SPI_SCLK_SPEED_DIV2				0			//PCLK divided by 2
+#define SPI_SCLK_SPEED_DIV4				1			//PCLK divided by 4
+#define SPI_SCLK_SPEED_DIV8				2			//PCLK divided by 8
+#define SPI_SCLK_SPEED_DIV16			3			//PCLK divided by 16
+#define SPI_SCLK_SPEED_DIV32			4			//PCLK divided by 32
+#define SPI_SCLK_SPEED_DIV64			5			//PCLK divided by 64
+#define SPI_SCLK_SPEED_DIV128			6			//PCLK divided by 128
+#define SPI_SCLK_SPEED_DIV256			7			//PCLK divided by 256
+
+/*
+ * @SPI_DFF
+ */
+#define SPI_DFF_8BIT					0			//8 bit data frame format
+#define SPI_DFF_16BIT					1			//16 bit data frame format
+
+/*
+ * @SPI_CPOL
+ */
+#define SPI_CPOL_LOW					0			//clock low when idle
+#define SPI_CPOL_HIGH					1			//clock high when idle
+
+/*
+ * @SPI_CPHA
+ */
+#define SPI_CPHA_LOW					0			//The first clock transition is the first data capture edge
+#define SPI_CPHA_HIGH					1			//The second clock transition is the first data capture edge
+
+/*
+ * @SPI_SSM
+ */
+#define SPI_SSM_DI					0				//Software slave management disable
+#define SPI_SSM_EN					1				//Software slave management enable
 
 
 #endif /* INC_STM32F407XX_SPI_DRIVER_H_ */

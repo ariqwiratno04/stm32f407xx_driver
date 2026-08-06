@@ -5,7 +5,7 @@
  *      Author: LEGION
  */
 
-#include "stm32f407xx_gpio_driver.h"
+#include "stm32f407xx.h"
 
 /*
  * Peripheral clock setup
@@ -55,5 +55,39 @@ void SPI_PeriClockControl(SPI_Regdef_t *pSPIx, uint8_t EnorDi)
 		}
 	}
 }
+
+/*
+ * Initialize and De-initialize
+ */
+/******************************
+ * @fn			: SPI_Init
+ * @brief		: Initialize SPI config
+ *
+ * @param[0]	: SPI Handle
+ *
+ * @return		: none
+ * @Note		: none
+ */
+void SPI_Init(SPI_Handle_t *pSPIHandle)
+{
+	uint32_t tempreg = 0;
+
+	//1. Configure the device mode
+	tempreg |= pSPIHandle->SPIConfig.SPI_DeviceMode << 2;
+
+	//2. Configure the bus mode
+
+}
+
+/******************************
+ * @fn			: SPI_DeInit
+ * @brief		: De-Initialize SPI config
+ *
+ * @param[0]	: SPI Handle
+ *
+ * @return		: none
+ * @Note		: none
+ */
+void SPI_DeInit(SPI_Regdef_t *pSPIx);
 
 
