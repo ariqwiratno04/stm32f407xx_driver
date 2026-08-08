@@ -16,8 +16,8 @@
 typedef struct{
 
 	uint8_t SPI_DeviceMode;				//Possible values are @SPI_DEVICE_MODE
-	uint8_t SPI_BuSConfig;				//Possible values are @SPI_BUS_CONFIG
-	uint8_t SPISclkSpeed;				//Possible values are @SPI_SCLK_SPEED
+	uint8_t SPI_BusConfig;				//Possible values are @SPI_BUS_CONFIG
+	uint8_t SPI_SclkSpeed;				//Possible values are @SPI_SCLK_SPEED
 	uint8_t SPI_DFF;					//Possible values are @SPI_DFF
 	uint8_t SPI_CPOL;					//Possible values are @SPI_CPOL
 	uint8_t SPI_CPHA;					//Possible values are @SPI_CPHA
@@ -74,7 +74,7 @@ void SPI_IRQHandling(SPI_Handle_t *pHandle);
 /*
  *  @SPI_BUS_CONFIG
  */
-#define	SPI_BUS_CONFIG FD				0			//Full duplex
+#define	SPI_BUS_CONFIG_FD				0			//Full duplex
 #define SPI_BUS_CONFIG_HD				1			//Half duplex
 #define SPI_BUS_CONFIG_S_RX				2			//Simplex RX only
 
