@@ -120,6 +120,31 @@ void SPI_Init(SPI_Handle_t *pSPIHandle)
  * @return		: none
  * @Note		: none
  */
-void SPI_DeInit(SPI_Regdef_t *pSPIx);
+void SPI_DeInit(SPI_Regdef_t *pSPIx)
+{
+
+}
+
+/******************************
+ * @fn			: SPI_SendData
+ * @brief		: Send data through SPI with blocking polling loop
+ *
+ * @param[0]	: SPI Regdef
+ * @param[1]	: TX data buffer
+ * @param[2]	: Data length
+ *
+ * @return		: none
+ * @Note		: none
+ */
+void SPI_SendData(SPI_Regdef_t *pSPIx, uint8_t *pTxBuffer, uint32_t Len)
+{
+	while(Len > 0){
+		//1. Wait until TXE i set
+		while( !(pSPIx->SR & (1 << 1)))			//wait until TX buffer is empty (1 condition)
+		{
+
+		}
+	}
+}
 
 
