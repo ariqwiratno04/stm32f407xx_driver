@@ -173,4 +173,39 @@ void SPI_SendData(SPI_Regdef_t *pSPIx, uint8_t *pTxBuffer, uint32_t Len)
 	}
 }
 
+/******************************
+ * @fn			: SPI_PeripheralControl
+ * @brief		: Enable the SPI peripheral
+ *
+ * @param[0]	: SPI Regdef
+ * @param[1]	: Enable or disable
+ *
+ * @Note		: use this function after done configuring the SPI config
+ */
+void SPI_PeripheralControl(SPI_Regdef_t *pSPIx, uint8_t EnorDi){
+
+	if(EnorDi == ENABLE){
+
+		pSPIx->CR1 |= (1 << SPI_CR1_SPE);		//enable the SPE register
+
+	}else{
+
+		pSPIx->CR1 &= ~(1 << SPI_CR1_SPE);		//clear the SPE register
+
+	}
+}
+
+void SPI_SSIConfig(SPI_Regdef_t *pSPIx, uint8_t EnorDi)
+{
+	if(EnorDi == ENABLE){
+
+			pSPIx->CR1 |= (1 << SPI_CR1_SSI);		//enable the SPE register
+
+		}else{
+
+			pSPIx->CR1 &= ~(1 << SPI_CR1_SSI);		//clear the SPE register
+
+		}
+}
+
 

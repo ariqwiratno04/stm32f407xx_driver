@@ -54,11 +54,21 @@ void SPI_SendData(SPI_Regdef_t *pSPIx, uint8_t *pTxBuffer, uint32_t Len);
 void SPI_ReceiveData(SPI_Regdef_t *pSPIx, uint8_t *pRxBuffer, uint32_t Len);
 
 /*
+ * Peripheral control SPI
+ */
+void SPI_PeripheralControl(SPI_Regdef_t *pSPIx, uint8_t EnorDi);
+
+/*
  * IRQ configuration and ISR handling
  */
 void SPI_IRQInterruptConfig(uint8_t IRQNumber, uint8_t EnorDi);
 void SPI_IRQPriorityConfig(uint8_t IRQNumber, uint32_t IRQPriority);
 void SPI_IRQHandling(SPI_Handle_t *pHandle);
+
+/*
+ * Other
+ */
+void SPI_SSIConfig(SPI_Regdef_t *pSPIx, uint8_t EnorDi);
 
 /*
  * SPI related status flag definitions

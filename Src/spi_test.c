@@ -32,7 +32,7 @@ void SPI2_GPIOInits(void){
 	SPIPins.GPIO_PinConfig.GPIO_PinNumber		= GPIO_PIN_NO_14;
 	GPIO_Init(&SPIPins);
 
-	//Initialize the MISO
+	//Initialize the MOSI
 	SPIPins.GPIO_PinConfig.GPIO_PinNumber		= GPIO_PIN_NO_15;
 	GPIO_Init(&SPIPins);
 
@@ -64,8 +64,19 @@ void SPI2_Inits(void){
 
 int main(void){
 
+	char user_data[] = "Hello World";
+
 	SPI2_GPIOInits();
 	SPI2_Inits();
+
+	//enable the NSS signal internally high and avoids MODF error
+	SPI_SSIConfig(SPI2, ENABLE);
+
+	SPI_PeripheralControl(SPI2, ENABLE);
+
+	while(1){
+	SPI_SendData(SPI2, (uint8_t*)user_data, strlen(user_data));
+	}
 
 	return 0;
 }
