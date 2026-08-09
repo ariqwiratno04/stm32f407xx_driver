@@ -125,6 +125,15 @@ void SPI_DeInit(SPI_Regdef_t *pSPIx)
 
 }
 
+uint8_t SPI_GetFlagStatus(SPI_Regdef_t *pSPIx, uint32_t FlagName)
+{
+	if(pSPIx->SR & FlagName)
+	{
+		return FLAG_SET;
+	}
+	return FLAG_RESET;
+}
+
 /******************************
  * @fn			: SPI_SendData
  * @brief		: Send data through SPI with blocking polling loop
@@ -139,10 +148,24 @@ void SPI_DeInit(SPI_Regdef_t *pSPIx)
 void SPI_SendData(SPI_Regdef_t *pSPIx, uint8_t *pTxBuffer, uint32_t Len)
 {
 	while(Len > 0){
-		//1. Wait until TXE i set
-		while( !(pSPIx->SR & (1 << 1)))			//wait until TX buffer is empty (1 condition)
-		{
 
+		//1. Wait until TXE i set using while loop
+		while(SPI_GetFlagStatus(pSPIx, SPI_TXE_FLAG) == FLAG_RESET);
+
+		//2. Check the DFF bit in CR1
+		if(pSPIx->CR1 & (1 << SPI_CR1_DFF))
+		{
+			//16 bit data frame
+			//3. Load the data into the data register
+			pSPIx->DR =		*((uint16_t*)pTxBuffer);
+			Len -= 2;
+			pTxBuffer += 2;
+		}else
+		{
+			//8 bit data frame
+			pSPIx->DR =		*pTxBuffer;
+			Len--;
+			pTxBuffer++;
 		}
 	}
 }

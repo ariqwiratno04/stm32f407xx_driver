@@ -1,2 +1,5 @@
 stm32f407xx_spi_driver.c:24:6:SPI_PeriClockControl	11
 stm32f407xx_spi_driver.c:71:6:SPI_Init	4
+stm32f407xx_spi_driver.c:123:6:SPI_DeInit	1
+stm32f407xx_spi_driver.c:128:9:SPI_GetFlagStatus	2
+stm32f407xx_spi_driver.c:148:6:SPI_SendData	4
