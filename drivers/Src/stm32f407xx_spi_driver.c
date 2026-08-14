@@ -195,6 +195,16 @@ void SPI_PeripheralControl(SPI_Regdef_t *pSPIx, uint8_t EnorDi){
 	}
 }
 
+/******************************
+ * @fn			: SPI_SSIConfig
+ * @brief		: Enable the SSI or internal slave select
+ *
+ * @param[0]	: SPI Regdef
+ * @param[1]	: Enable or disable
+ *
+ * @Note		: use this function for configuring the SPI internal slave select
+ * 				(use this SSIConfig when using software SSM)
+ */
 void SPI_SSIConfig(SPI_Regdef_t *pSPIx, uint8_t EnorDi)
 {
 	if(EnorDi == ENABLE){
@@ -204,6 +214,29 @@ void SPI_SSIConfig(SPI_Regdef_t *pSPIx, uint8_t EnorDi)
 		}else{
 
 			pSPIx->CR1 &= ~(1 << SPI_CR1_SSI);		//clear the SPE register
+
+		}
+}
+
+/******************************
+ * @fn			: SPI_SSOEConfig
+ * @brief		: Enable the SSM hardware by pulling low as a master
+ *
+ * @param[0]	: SPI Regdef
+ * @param[1]	: Enable or disable
+ *
+ * @Note		: use this function for configuring the SPI hardware when acting as a master
+ * 				(use this SSOEConfig when using hardware SSM)
+ */
+void SPI_SSOEConfig(SPI_Regdef_t *pSPIx, uint8_t EnorDi)
+{
+	if(EnorDi == ENABLE){
+
+			pSPIx->CR2 |= (1 << SPI_CR2_SSOE);		//enable the SSOE register
+
+		}else{
+
+			pSPIx->CR2 &= ~(1 << SPI_CR2_SSOE);		//clear the SSOE register
 
 		}
 }

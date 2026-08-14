@@ -17,6 +17,12 @@
 #include <stdint.h>
 #include <stdio.h>
 
+void delay(void)
+{
+	for(uint32_t i = 0; i < 500000; i++);
+}
+
+
 void SPI2_GPIOInits(void){
 
 	GPIO_Handle_t SPIPins;
@@ -46,6 +52,19 @@ void SPI2_GPIOInits(void){
 
 }
 
+void Button_Inits(void){
+
+	GPIO_Handle_t GpioButton;
+
+	GpioButton.pGPIOx 								= GPIOA;
+	GpioButton.GPIO_PinConfig.GPIO_PinNumber 		= GPIO_PIN_NO_0;
+	GpioButton.GPIO_PinConfig.GPIO_PinMode 			= GPIO_MODE_IN;
+	GpioButton.GPIO_PinConfig.GPIO_PinSpeed			= GPIO_SPEED_HIGH;
+	GpioButton.GPIO_PinConfig.GPIO_PinPuPdControl 	= GPIO_NO_PUPD;
+
+	GPIO_Init(&GpioButton);
+}
+
 void SPI2_Inits(void){
 
 	SPI_Handle_t SPI2Handle;
@@ -66,14 +85,29 @@ int main(void){
 
 	char user_data[] = "Hello World";
 
+	Button_Inits();
 	SPI2_GPIOInits();
 	SPI2_Inits();
+	SPI_SSOEConfig(SPI2, ENABLE);
 
-	SPI_PeripheralControl(SPI2, ENABLE);
+	while(1)
+	{
 
-	while(1){
-	SPI_SendData(SPI2, (uint8_t*)user_data, strlen(user_data));
+		while(!GPIO_ReadFromInputPin(GPIOA, GPIO_PIN_NO_0));
+		delay();		//button debouncer
+
+		SPI_PeripheralControl(SPI2, ENABLE);			//enable the SPi after SPI inits
+
+		uint8_t dataLen = strlen(user_data);
+		SPI_SendData(SPI2, &dataLen, 1);
+
+		SPI_SendData(SPI2, (uint8_t*)user_data, strlen(user_data));
+		printf("Send data/n");
+
+		while(SPI_GetFlagStatus(SPI2, SPI_BSY_FLAG));	//wait until data is sent
+		SPI_PeripheralControl(SPI2, DISABLE);			//disable after all the data are send
 	}
+
 
 	return 0;
 }

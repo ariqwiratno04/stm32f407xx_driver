@@ -69,6 +69,8 @@ void SPI_IRQHandling(SPI_Handle_t *pHandle);
  * Other
  */
 void SPI_SSIConfig(SPI_Regdef_t *pSPIx, uint8_t EnorDi);
+void SPI_SSOEConfig(SPI_Regdef_t *pSPIx, uint8_t EnorDi);
+uint8_t SPI_GetFlagStatus(SPI_Regdef_t *pSPIx, uint32_t FlagName);
 
 /*
  * SPI related status flag definitions
