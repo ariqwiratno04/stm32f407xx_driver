@@ -152,14 +152,14 @@ void SPI_SendData(SPI_Regdef_t *pSPIx, uint8_t *pTxBuffer, uint32_t Len)
 {
 	while(Len > 0){
 
-		//1. Wait until TXE i set using while loop
+		//1. Wait until TXE set (wait until transmit buffer is empty) using while loop
 		while(SPI_GetFlagStatus(pSPIx, SPI_TXE_FLAG) == FLAG_RESET);
 
 		//2. Check the DFF bit in CR1
 		if(pSPIx->CR1 & (1 << SPI_CR1_DFF))
 		{
 			//16 bit data frame
-			//3. Load the data into the data register
+			//3. Load the data from Tx buffer into the data register
 			pSPIx->DR =		*((uint16_t*)pTxBuffer);
 			Len -= 2;
 			pTxBuffer += 2;
@@ -169,6 +169,42 @@ void SPI_SendData(SPI_Regdef_t *pSPIx, uint8_t *pTxBuffer, uint32_t Len)
 			pSPIx->DR =		*pTxBuffer;
 			Len--;
 			pTxBuffer++;
+		}
+	}
+}
+
+/******************************
+ * @fn			: SPI_ReceiveData
+ * @brief		: Read received data through SPI with blocking polling loop
+ *
+ * @param[0]	: SPI Regdef
+ * @param[1]	: RX data buffer
+ * @param[2]	: Data length
+ *
+ * @return		: none
+ * @Note		: none
+ */
+void SPI_ReceiveData(SPI_Regdef_t *pSPIx, uint8_t *pRxBuffer, uint32_t Len)
+{
+	while(Len > 0){
+
+		//1. Wait until RXNE set (wait until receive buffer is not empty) using while loop
+		while(SPI_GetFlagStatus(pSPIx, SPI_RXNE_FLAG) == FLAG_RESET);
+
+		//2. Check the DFF bit in CR1
+		if(pSPIx->CR1 & (1 << SPI_CR1_DFF))
+		{
+			//16 bit data frame
+			//3. Load the data from data register to Rx buffer
+			*((uint16_t*)pRxBuffer) = pSPIx->DR;
+			Len -= 2;
+			pRxBuffer += 2;
+		}else
+		{
+			//8 bit data frame
+			*pRxBuffer = pSPIx->DR;
+			Len--;
+			pRxBuffer++;
 		}
 	}
 }
