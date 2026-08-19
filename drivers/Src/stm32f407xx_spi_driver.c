@@ -186,22 +186,34 @@ void SPI_SendData(SPI_Regdef_t *pSPIx, uint8_t *pTxBuffer, uint32_t Len)
  */
 void SPI_ReceiveData(SPI_Regdef_t *pSPIx, uint8_t *pRxBuffer, uint32_t Len)
 {
-	while(Len > 0){
+	uint16_t dummyTx16 = 0xFFFF;
+	uint8_t  dummyTx8  = 0xFF;
 
-		//1. Wait until RXNE set (wait until receive buffer is not empty) using while loop
-		while(SPI_GetFlagStatus(pSPIx, SPI_RXNE_FLAG) == FLAG_RESET);
+	while(Len > 0){
 
 		//2. Check the DFF bit in CR1
 		if(pSPIx->CR1 & (1 << SPI_CR1_DFF))
 		{
 			//16 bit data frame
-			//3. Load the data from data register to Rx buffer
+			//Send 16-bit dummy data FIRST to generate SPI clocks and shift Slave's data register
+			SPI_SendData(pSPIx, (uint8_t*)&dummyTx16, 2);
+
+			//Wait until RXNE set (wait until receive buffer is not empty) using while loop
+			while(SPI_GetFlagStatus(pSPIx, SPI_RXNE_FLAG) == FLAG_RESET);
+
+			//Load the data from data register to Rx buffer
 			*((uint16_t*)pRxBuffer) = pSPIx->DR;
 			Len -= 2;
 			pRxBuffer += 2;
 		}else
 		{
 			//8 bit data frame
+			//Send 8-bit dummy data FIRST to generate SPI clocks and shift Slave's data register
+			SPI_SendData(pSPIx, &dummyTx8, 1);
+
+			//Wait until RXNE set (wait until receive buffer is not empty) using while loop
+			while(SPI_GetFlagStatus(pSPIx, SPI_RXNE_FLAG) == FLAG_RESET);
+
 			*pRxBuffer = pSPIx->DR;
 			Len--;
 			pRxBuffer++;

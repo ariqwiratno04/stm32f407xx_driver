@@ -3,7 +3,7 @@
 ../drivers/Src/stm32f407xx_spi_driver.c:126:6:SPI_DeInit	1
 ../drivers/Src/stm32f407xx_spi_driver.c:131:9:SPI_GetFlagStatus	2
 ../drivers/Src/stm32f407xx_spi_driver.c:151:6:SPI_SendData	4
-../drivers/Src/stm32f407xx_spi_driver.c:187:6:SPI_ReceiveData	4
-../drivers/Src/stm32f407xx_spi_driver.c:221:6:SPI_PeripheralControl	2
-../drivers/Src/stm32f407xx_spi_driver.c:244:6:SPI_SSIConfig	2
-../drivers/Src/stm32f407xx_spi_driver.c:267:6:SPI_SSOEConfig	2
+../drivers/Src/stm32f407xx_spi_driver.c:187:6:SPI_ReceiveData	5
+../drivers/Src/stm32f407xx_spi_driver.c:233:6:SPI_PeripheralControl	2
+../drivers/Src/stm32f407xx_spi_driver.c:256:6:SPI_SSIConfig	2
+../drivers/Src/stm32f407xx_spi_driver.c:279:6:SPI_SSOEConfig	2
