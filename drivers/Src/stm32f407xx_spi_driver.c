@@ -150,6 +150,9 @@ uint8_t SPI_GetFlagStatus(SPI_Regdef_t *pSPIx, uint32_t FlagName)
  */
 void SPI_SendData(SPI_Regdef_t *pSPIx, uint8_t *pTxBuffer, uint32_t Len)
 {
+	//Temporary variable for clearing RXNE using dummy read
+	volatile uint32_t dummyRead;
+
 	while(Len > 0){
 
 		//1. Wait until TXE set (wait until transmit buffer is empty) using while loop
@@ -170,6 +173,14 @@ void SPI_SendData(SPI_Regdef_t *pSPIx, uint8_t *pTxBuffer, uint32_t Len)
 			Len--;
 			pTxBuffer++;
 		}
+
+		//4. Wait for the transfer to complete and RXNE to be set
+		while(SPI_GetFlagStatus(pSPIx, SPI_RXNE_FLAG) == FLAG_RESET);
+
+		// 4. DUMMY READ to clear RXNE and prevent Overrun (OVR)
+		dummyRead = pSPIx->DR;
+		(void)dummyRead; // Prevents compiler "unused variable" warning
+
 	}
 }
 
@@ -186,8 +197,6 @@ void SPI_SendData(SPI_Regdef_t *pSPIx, uint8_t *pTxBuffer, uint32_t Len)
  */
 void SPI_ReceiveData(SPI_Regdef_t *pSPIx, uint8_t *pRxBuffer, uint32_t Len)
 {
-	uint16_t dummyTx16 = 0xFFFF;
-	uint8_t  dummyTx8  = 0xFF;
 
 	while(Len > 0){
 
@@ -196,7 +205,8 @@ void SPI_ReceiveData(SPI_Regdef_t *pSPIx, uint8_t *pRxBuffer, uint32_t Len)
 		{
 			//16 bit data frame
 			//Send 16-bit dummy data FIRST to generate SPI clocks and shift Slave's data register
-			SPI_SendData(pSPIx, (uint8_t*)&dummyTx16, 2);
+			while(SPI_GetFlagStatus(pSPIx, SPI_TXE_FLAG) == FLAG_RESET);
+			pSPIx->DR = 0xFFFF;     // dummy write to generate clock
 
 			//Wait until RXNE set (wait until receive buffer is not empty) using while loop
 			while(SPI_GetFlagStatus(pSPIx, SPI_RXNE_FLAG) == FLAG_RESET);
@@ -209,7 +219,8 @@ void SPI_ReceiveData(SPI_Regdef_t *pSPIx, uint8_t *pRxBuffer, uint32_t Len)
 		{
 			//8 bit data frame
 			//Send 8-bit dummy data FIRST to generate SPI clocks and shift Slave's data register
-			SPI_SendData(pSPIx, &dummyTx8, 1);
+			while(SPI_GetFlagStatus(pSPIx, SPI_TXE_FLAG) == FLAG_RESET);
+			pSPIx->DR = 0xFF;     // dummy write to generate clock
 
 			//Wait until RXNE set (wait until receive buffer is not empty) using while loop
 			while(SPI_GetFlagStatus(pSPIx, SPI_RXNE_FLAG) == FLAG_RESET);
