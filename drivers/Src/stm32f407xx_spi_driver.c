@@ -300,4 +300,81 @@ void SPI_SSOEConfig(SPI_Regdef_t *pSPIx, uint8_t EnorDi)
 		}
 }
 
+/******************************
+ * @fn			: SPI_IRQInterruptConfig
+ * @brief		: Configuration init for interrupt IRQ
+ *
+ * @param[0]	: IRQ Number
+ * @param[1]	: Enable or disable
+ *
+ * @return		: none
+ * @Note		: none
+ *
+ *
+ * Interrupt configuration (please refer to the Cortex M4 Reference Manual)
+ */
+void SPI_IRQInterruptConfig(uint8_t IRQNumber, uint8_t EnorDi)
+{
+	if(EnorDi == ENABLE){
+		if(IRQNumber <= 31){
+
+			//program to ISER0 Register to enable
+			*NVIC_ISER0 |= (1 << IRQNumber);
+
+		}else if(IRQNumber > 31 && IRQNumber < 64){
+
+			//program to ISER1 Register to enable
+			*NVIC_ISER1 |= (1 << (IRQNumber % 32));
+
+		}else if(IRQNumber >= 64 && IRQNumber < 96){
+
+			//program to ISER2 Register to enable
+			*NVIC_ISER2 |= (1 << (IRQNumber % 64));
+		}
+	}else{
+		if(IRQNumber <= 31){
+
+			//program to ICER0 Register to enable
+			*NVIC_ICER0 |= (1 << IRQNumber);
+
+
+		}else if(IRQNumber > 31 && IRQNumber < 64){
+
+			//program to ICER1 Register to enable
+			*NVIC_ICER1 |= (1 << IRQNumber);
+
+		}else if(IRQNumber >= 64 && IRQNumber < 96){
+
+			//program to ICER2 Register to enable
+			*NVIC_ICER2 |= (1 << IRQNumber);
+
+		}
+	}
+
+}
+
+/******************************
+ * @fn			: SPI_IRQPriorityConfig
+ * @brief		: Configuration init for interrupt IRQ
+ *
+ * @param[0]	: IRQ Number
+ * @param[1]	: IRQ Priority
+ *
+ * @return		: none
+ * @Note		: none
+ *
+ */
+void SPI_IRQPriorityConfig(uint8_t IRQNumber, uint32_t IRQPriority)
+{
+	//Calculate the ipr register from the IRQ number
+	uint8_t iprx = IRQNumber / 4;
+	uint8_t iprx_section = IRQNumber % 4;
+
+	uint8_t	shift_amount = (8 * iprx_section) + (8 - NO_PR_BITS_IMPLEMENTED);
+
+	*(NVIC_PR_BASE_ADDR + iprx) |= (IRQPriority << shift_amount);
+}
+
+
+
 
