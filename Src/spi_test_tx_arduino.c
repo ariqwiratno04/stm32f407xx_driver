@@ -31,7 +31,7 @@ void SPI2_GPIOInits(void){
 	SPIPins.GPIO_PinConfig.GPIO_PinMode 		= GPIO_MODE_ALT;
 	SPIPins.GPIO_PinConfig.GPIO_PinAltFunMode 	= GPIO_AF5;		//SPI mode
 	SPIPins.GPIO_PinConfig.GPIO_PinOPType		= GPIO_OP_TYPE_PP;
-	SPIPins.GPIO_PinConfig.GPIO_PinPuPdControl	= GPIO_NO_PUPD;
+	SPIPins.GPIO_PinConfig.GPIO_PinPuPdControl	= GPIO_PIN_PU;
 	SPIPins.GPIO_PinConfig.GPIO_PinSpeed		= GPIO_SPEED_HIGH;
 
 	//Initialize the MISO
@@ -47,6 +47,8 @@ void SPI2_GPIOInits(void){
 	GPIO_Init(&SPIPins);
 
 	//Initialize the NSS
+	//SPIPins.GPIO_PinConfig.GPIO_PinOPType		= GPIO_OP_TYPE_OD;
+	//SPIPins.GPIO_PinConfig.GPIO_PinPuPdControl	= GPIO_PIN_PU;
 	SPIPins.GPIO_PinConfig.GPIO_PinNumber		= GPIO_PIN_NO_12;
 	GPIO_Init(&SPIPins);
 
@@ -75,7 +77,7 @@ void SPI2_Inits(void){
 	SPI2Handle.SPIConfig.SPI_DeviceMode			= SPI_DEVICE_MODE_MASTER;
 	SPI2Handle.SPIConfig.SPI_CPHA				= SPI_CPHA_LOW;
 	SPI2Handle.SPIConfig.SPI_CPOL				= SPI_CPOL_LOW;
-	SPI2Handle.SPIConfig.SPI_SclkSpeed			= SPI_SCLK_SPEED_DIV8;
+	SPI2Handle.SPIConfig.SPI_SclkSpeed			= SPI_SCLK_SPEED_DIV64;
 	SPI2Handle.SPIConfig.SPI_SSM				= SPI_SSM_DI;		//will be using SS hardware
 
 	SPI_Init(&SPI2Handle);

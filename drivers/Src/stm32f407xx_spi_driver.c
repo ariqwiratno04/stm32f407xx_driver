@@ -375,6 +375,82 @@ void SPI_IRQPriorityConfig(uint8_t IRQNumber, uint32_t IRQPriority)
 	*(NVIC_PR_BASE_ADDR + iprx) |= (IRQPriority << shift_amount);
 }
 
+void SPI_IRQHandling(SPI_Handle_t *pHandle){
+
+	uint8_t temp1, temp2;
+
+	//check for TXE
+	temp1 = pHandle->pSPIx->SR & (1 << SPI_SR_TXE);
+	temp2 = pHandle->pSPIx->CR2 & (1 << SPI_CR2_TXEIE);
+
+	if(temp1 && temp2){
+		//handle TXE
+		spi_txe_interrupt_handle();
+	}
+
+	//check for RXNE
+	temp1 = pHandle->pSPIx->SR & (1 << SPI_SR_RXNE);
+	temp2 = pHandle->pSPIx->CR2 & (1 << SPI_CR2_RXNEIE);
+
+	if(temp1 && temp2){
+		//handle RXE
+		spi_rxne_interrupt_handle();
+	}
+
+	//check for OVR
+		temp1 = pHandle->pSPIx->SR & (1 << SPI_SR_OVR);
+		temp2 = pHandle->pSPIx->CR2 & (1 << SPI_CR2_ERRIE);
+
+	if(temp1 && temp2){
+		//handle OVR error
+		spi_ovr_err_interrupt_handle();
+	}
+}
+
+uint8_t SPI_SendDataIT(SPI_Handle_t *pSPIHandle, uint8_t *pTxBuffer, uint32_t Len){
+
+	uint8_t state = pSPIHandle->TxState;
+
+	if(state != SPI_BUSY_IN_TX)
+	{
+	//1. Save the TX Buffer address and Len information
+	pSPIHandle->pTxBuffer = pTxBuffer;
+	pSPIHandle->TxLen = Len;
+
+	//2. Mark the SPI state as busy in transmission
+	pSPIHandle->TxState = SPI_BUSY_IN_TX;
+
+	//3. Enable TXEIE control bit to get interrupt whenever TXE flag is st in SR
+	pSPIHandle->pSPIx->CR2 |= (1 << SPI_CR2_TXEIE);
+
+	}
+
+	//4. Data transmission will be handled by the ISR
+	return state;
+}
+
+uint8_t SPI_ReceiveDataIT(SPI_Handle_t *pSPIHandle, uint8_t *pRxBuffer, uint32_t Len){
+
+	uint8_t state = pSPIHandle->RxState;
+
+	if(state != SPI_BUSY_IN_RX)
+	{
+	//1. Save the TX Buffer address and Len information
+	pSPIHandle->pRxBuffer = pRxBuffer;
+	pSPIHandle->RxLen = Len;
+
+	//2. Mark the SPI state as busy in transmission
+	pSPIHandle->RxState = SPI_BUSY_IN_RX;
+
+	//3. Enable TXEIE control bit to get interrupt whenever TXE flag is st in SR
+	pSPIHandle->pSPIx->CR2 |= (1 << SPI_CR2_RXNEIE);
+
+	}
+
+	//4. Data transmission will be handled by the ISR
+	return state;
+}
+
 
 
 

@@ -29,6 +29,12 @@ typedef struct{
 
 	SPI_Regdef_t	*pSPIx;
 	SPI_PinConfig_t	SPIConfig;
+	uint8_t			*pTxBuffer; 		// Store application Tx buffer address
+	uint8_t			*pRxBuffer;			// Store application Rx buffer address
+	uint32_t		TxLen;				// Store Tx len
+	uint32_t		RxLen;				// Store Rx len
+	uint8_t			TxState;			// Store Tx state
+	uint8_t			RxState;			// Store Rx state
 
 }SPI_Handle_t;
 
@@ -53,8 +59,8 @@ void SPI_DeInit(SPI_Regdef_t *pSPIx);
 void SPI_SendData(SPI_Regdef_t *pSPIx, uint8_t *pTxBuffer, uint32_t Len);
 void SPI_ReceiveData(SPI_Regdef_t *pSPIx, uint8_t *pRxBuffer, uint32_t Len);
 
-void SPI_SendDataIT(SPI_Handle_t *pSPIHandle, uint8_t *pTxBuffer, uint32_t Len);
-void SPI_ReceiveDataIT(SPI_Handle_t *pSPIHandle, uint8_t *pRxBuffer, uint32_t Len);
+uint8_t SPI_SendDataIT(SPI_Handle_t *pSPIHandle, uint8_t *pTxBuffer, uint32_t Len);
+uint8_t SPI_ReceiveDataIT(SPI_Handle_t *pSPIHandle, uint8_t *pRxBuffer, uint32_t Len);
 
 /*
  * Peripheral control SPI
@@ -136,8 +142,14 @@ uint8_t SPI_GetFlagStatus(SPI_Regdef_t *pSPIx, uint32_t FlagName);
 /*
  * @SPI_SSM
  */
-#define SPI_SSM_DI					0				//Software slave management disable
-#define SPI_SSM_EN					1				//Software slave management enable
+#define SPI_SSM_DI						0			//Software slave management disable
+#define SPI_SSM_EN						1			//Software slave management enable
 
+/*
+ * Possible SPI Application States
+ */
+#define SPI_READY						0
+#define SPI_BUSY_IN_RX					1
+#define SPI_BUSY_IN_TX					2
 
 #endif /* INC_STM32F407XX_SPI_DRIVER_H_ */
