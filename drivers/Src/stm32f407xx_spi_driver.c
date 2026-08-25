@@ -7,6 +7,10 @@
 
 #include "stm32f407xx.h"
 
+static void spi_txe_interrupt_handle(SPI_Handle_t *pSPIHandle);
+static void spi_rxne_interrupt_handle(SPI_Handle_t *pSPIHandle);
+static void spi_ovr_err_interrupt_handle(SPI_Handle_t *pSPIHandle);
+
 /*
  * Peripheral clock setup
  */
@@ -150,9 +154,6 @@ uint8_t SPI_GetFlagStatus(SPI_Regdef_t *pSPIx, uint32_t FlagName)
  */
 void SPI_SendData(SPI_Regdef_t *pSPIx, uint8_t *pTxBuffer, uint32_t Len)
 {
-	//Temporary variable for clearing RXNE using dummy read
-	volatile uint32_t dummyRead;
-
 	while(Len > 0){
 
 		//1. Wait until TXE set (wait until transmit buffer is empty) using while loop
@@ -174,13 +175,6 @@ void SPI_SendData(SPI_Regdef_t *pSPIx, uint8_t *pTxBuffer, uint32_t Len)
 			pTxBuffer++;
 		}
 
-		//4. Wait for the transfer to complete and RXNE to be set
-		while(SPI_GetFlagStatus(pSPIx, SPI_RXNE_FLAG) == FLAG_RESET);
-
-		// 4. DUMMY READ to clear RXNE and prevent Overrun (OVR)
-		dummyRead = pSPIx->DR;
-		(void)dummyRead; // Prevents compiler "unused variable" warning
-
 	}
 }
 
@@ -200,17 +194,13 @@ void SPI_ReceiveData(SPI_Regdef_t *pSPIx, uint8_t *pRxBuffer, uint32_t Len)
 
 	while(Len > 0){
 
-		//2. Check the DFF bit in CR1
+		//Wait until RXNE set (wait until receive buffer is not empty) using while loop
+		while(SPI_GetFlagStatus(pSPIx, SPI_RXNE_FLAG) == FLAG_RESET);
+
+		//Check the DFF bit in CR1
 		if(pSPIx->CR1 & (1 << SPI_CR1_DFF))
 		{
 			//16 bit data frame
-			//Send 16-bit dummy data FIRST to generate SPI clocks and shift Slave's data register
-			while(SPI_GetFlagStatus(pSPIx, SPI_TXE_FLAG) == FLAG_RESET);
-			pSPIx->DR = 0xFFFF;     // dummy write to generate clock
-
-			//Wait until RXNE set (wait until receive buffer is not empty) using while loop
-			while(SPI_GetFlagStatus(pSPIx, SPI_RXNE_FLAG) == FLAG_RESET);
-
 			//Load the data from data register to Rx buffer
 			*((uint16_t*)pRxBuffer) = pSPIx->DR;
 			Len -= 2;
@@ -218,13 +208,6 @@ void SPI_ReceiveData(SPI_Regdef_t *pSPIx, uint8_t *pRxBuffer, uint32_t Len)
 		}else
 		{
 			//8 bit data frame
-			//Send 8-bit dummy data FIRST to generate SPI clocks and shift Slave's data register
-			while(SPI_GetFlagStatus(pSPIx, SPI_TXE_FLAG) == FLAG_RESET);
-			pSPIx->DR = 0xFF;     // dummy write to generate clock
-
-			//Wait until RXNE set (wait until receive buffer is not empty) using while loop
-			while(SPI_GetFlagStatus(pSPIx, SPI_RXNE_FLAG) == FLAG_RESET);
-
 			*pRxBuffer = pSPIx->DR;
 			Len--;
 			pRxBuffer++;
@@ -451,6 +434,28 @@ uint8_t SPI_ReceiveDataIT(SPI_Handle_t *pSPIHandle, uint8_t *pRxBuffer, uint32_t
 	return state;
 }
 
+/*
+ * Helper function
+ */
+static void spi_txe_interrupt_handle(SPI_Handle_t *pSPIHandle)
+{
+	if(pSPIHandle->pSPIx->CR1 & (1 << SPI_CR1_DFF))
+		{
+			//16 bit data frame
+			//3. Load the data from Tx buffer into the data register
+			pSPIHandle->pSPIx->DR =		*((uint16_t*)pSPIHandle->pTxBuffer);
+			pSPIHandle->TxLen -= 2;
+			pSPIHandle->pTxBuffer += 2;
+		}else
+		{
+			//8 bit data frame
+			pSPIHandle->pSPIx->DR =		*pTxBuffer;
+			Len--;
+			pTxBuffer++;
+		}
+}
 
+static void spi_rxne_interrupt_handle(SPI_Handle_t *pSPIHandle);
+static void spi_ovr_err_interrupt_handle(SPI_Handle_t *pSPIHandle);
 
 
