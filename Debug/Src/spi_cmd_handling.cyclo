@@ -1,6 +1,0 @@
-../Src/spi_cmd_handling.c:40:6:delay	2
-../Src/spi_cmd_handling.c:46:6:SPI2_GPIOInits	1
-../Src/spi_cmd_handling.c:76:6:Button_Inits	1
-../Src/spi_cmd_handling.c:89:6:SPI2_Inits	1
-../Src/spi_cmd_handling.c:105:9:SPI_VerifyAck	2
-../Src/spi_cmd_handling.c:114:5:main	14

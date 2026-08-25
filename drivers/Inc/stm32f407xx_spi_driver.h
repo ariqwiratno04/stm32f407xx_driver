@@ -80,6 +80,14 @@ void SPI_IRQHandling(SPI_Handle_t *pHandle);
 void SPI_SSIConfig(SPI_Regdef_t *pSPIx, uint8_t EnorDi);
 void SPI_SSOEConfig(SPI_Regdef_t *pSPIx, uint8_t EnorDi);
 uint8_t SPI_GetFlagStatus(SPI_Regdef_t *pSPIx, uint32_t FlagName);
+void SPI_CloseTransmission(SPI_Handle_t *pSPIHandle);
+void SPI_CloseReception(SPI_Handle_t *pSPIHandle);
+void SPI_ClearOVRFlag(SPI_Regdef_t *pSPIx);
+
+/*
+ * Application callback
+ */
+void SPI_ApplicationEventCallback(SPI_Handle_t *pSPIHandle, uint8_t AppEvent);
 
 /*
  * SPI related status flag definitions
@@ -151,5 +159,14 @@ uint8_t SPI_GetFlagStatus(SPI_Regdef_t *pSPIx, uint32_t FlagName);
 #define SPI_READY						0
 #define SPI_BUSY_IN_RX					1
 #define SPI_BUSY_IN_TX					2
+
+/*
+ * Possible SPI Application Events
+ */
+#define SPI_EVENT_TX_CMPLT				1
+#define SPI_EVENT_RX_CMPLT				2
+#define SPI_EVENT_OVR_ERR				3
+#define SPI_EVENT_CRC_ERR				4
+
 
 #endif /* INC_STM32F407XX_SPI_DRIVER_H_ */

@@ -9,8 +9,10 @@
 #define INC_STM32F407XX_H_
 
 #include <stdint.h>
+#include <stddef.h>
 
-#define __vo volatile 			//volatile variable
+#define __vo volatile 				//volatile variable
+#define __weak __attribute((weak))	//weak function
 
 /*
  * Arm Cortex M4 Processor NVIC Register Address
@@ -346,6 +348,12 @@ typedef struct{
 #define IRQ_SPI1				35
 #define IRQ_SPI2				36
 #define IRQ_SPI3				51
+
+/*
+ * macros for all the possible priority levels
+ */
+#define NVIC_IRQ_PRI0    0
+#define NVIC_IRQ_PRI15    15
 
 /*
  * General purpose macros
