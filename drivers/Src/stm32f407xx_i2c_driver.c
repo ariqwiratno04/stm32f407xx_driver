@@ -90,12 +90,13 @@ void I2C_Init(I2C_Handle_t *pI2CHandle){
 	//Enable the peripheral clock control
 	I2C_PeriClockControl(pI2CHandle->pI2Cx, ENABLE);
 
-	//1. Config the I2C master mode selection
-	if(pI2CHandle->I2C_Config->I2C_SCLSpeed > 0){
+	//Config the ACK control bit
+	pI2CHandle->pI2Cx->CR1 |= pI2CHandle->I2C_Config->I2C_ACKControl << I2C_CR1_ACK;
 
-		pI2CHandle->pI2Cx->CCR |= (1 << I2C_CCR_FS);
-	}
-
+	//Config FREQ register
+	uint32_t temp;
+	temp = RCC_GetPCLK1Value() / 1000000U;
+	pI2CHandle->pI2Cx->CR2 = (tempreg & 0x3F);
 }
 
 void I2C_DeInit(I2C_Regdef_t *pI2Cx);
