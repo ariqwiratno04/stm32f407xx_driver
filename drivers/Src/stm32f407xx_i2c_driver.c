@@ -93,10 +93,40 @@ void I2C_Init(I2C_Handle_t *pI2CHandle){
 	//Config the ACK control bit
 	pI2CHandle->pI2Cx->CR1 |= pI2CHandle->I2C_Config->I2C_ACKControl << I2C_CR1_ACK;
 
-	//Config FREQ register
-	uint32_t temp;
-	temp = RCC_GetPCLK1Value() / 1000000U;
+	//Config FREQ register CR2
+	uint32_t tempreg;
+	tempreg |= RCC_GetPCLK1Value() / 1000000U;
 	pI2CHandle->pI2Cx->CR2 = (tempreg & 0x3F);
+
+	//Config the device own Address
+	tempreg = 0;
+	tempreg |= pI2CHandle->I2C_Config->I2C_DeviceAddress << I2C_OAR1_ADD71;	//start writing address by the 1st bit
+	tempreg |= (1 << 14);					//need to always 1 by software refer to RM
+	pI2CHandle->pI2Cx->OAR1 = tempreg;		//write to register
+
+	//CCR Calculations
+	uint16_t ccr_value = 0;
+	tempreg = 0;
+
+	if(pI2CHandle->I2C_Config->I2C_SCLSpeed <= I2C_SCL_SPEED_SM)
+	{
+		//standard mode
+		ccr_value = RCC_GetPCLK1Value() / (2 * pI2CHandle->I2C_Config->I2C_SCLSpeed);		//the formula is RCC/2*SCLSpeed
+		tempreg |= (ccr_value & 0xFFF);
+
+	}else{
+		//fast mode
+		tempreg |= 1 << I2C_CCR_FS;		//set F/S bit to FM mode
+		tempreg |= pI2CHandle->I2C_Config->I2C_FMDutyCycle << I2C_CCR_DUTY;		//write the duty cycle
+		if(pI2CHandle->I2C_Config->I2C_FMDutyCycle == I2C_FM_DUTY_2)			//if duty cycle == 0
+		{
+			ccr_value = (RCC_GetPCLK1Value() / ( 3 * pI2CHandle->I2C_Config.I2C_SCLSpeed ) );
+		}else{
+			ccr_value = (RCC_GetPCLK1Value() / ( 25 * pI2CHandle->I2C_Config.I2C_SCLSpeed ) );
+		}
+		tempreg |= (ccr_value & 0xFFF);
+	}
+	pI2CHandle->pI2Cx->CCR = tempreg;
 }
 
 void I2C_DeInit(I2C_Regdef_t *pI2Cx);
