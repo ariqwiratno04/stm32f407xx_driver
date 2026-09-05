@@ -1,0 +1,5 @@
+i2c_master_tx.c:26:6:delay	2
+i2c_master_tx.c:31:6:I2C1_GPIOInits	1
+i2c_master_tx.c:52:6:I2C1_Inits	1
+i2c_master_tx.c:65:6:Button_Inits	1
+i2c_master_tx.c:78:5:main	2

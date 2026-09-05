@@ -94,14 +94,16 @@ uint32_t RCC_GetPLLOutputClock(void){
 
 void I2C_Init(I2C_Handle_t *pI2CHandle){
 
+	uint32_t tempreg = 0;
+
 	//Enable the peripheral clock control
 	I2C_PeriClockControl(pI2CHandle->pI2Cx, ENABLE);
 
 	//Config the ACK control bit
-	pI2CHandle->pI2Cx->CR1 |= pI2CHandle->I2C_Config.I2C_ACKControl << I2C_CR1_ACK;
+	tempreg |= pI2CHandle->I2C_Config.I2C_ACKControl << 10;
+	pI2CHandle->pI2Cx->CR1 = tempreg;
 
 	//Config FREQ register CR2
-	uint32_t tempreg = 0;
 	tempreg |= RCC_GetPCLK1Value() / 1000000U;
 	pI2CHandle->pI2Cx->CR2 = (tempreg & 0x3F);
 
