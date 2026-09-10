@@ -223,8 +223,6 @@ void I2C_MasterReceiveData(I2C_Handle_t *pI2CHandle, uint8_t *pRxbuffer, uint32_
 
 		//read data into buffer
 		*pRxbuffer = pI2CHandle->pI2Cx->DR;
-
-		return;
 	}
 
 	//procedure to read data from salve when Len > 1
