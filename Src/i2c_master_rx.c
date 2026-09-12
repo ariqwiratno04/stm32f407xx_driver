@@ -85,6 +85,7 @@ int main(void){
 	Button_Inits();
 	I2C1_GPIOInits();
 	I2C1_Inits();
+	//printf("Init done \n");
 
 	//Enable the I2C peripheral
 	I2C_PeripheralControl(I2C1, ENABLE);
@@ -97,21 +98,21 @@ int main(void){
 		//Wait button press
 		while(! GPIO_ReadFromInputPin(GPIOA, GPIO_PIN_NO_0));
 		delay();
-		printf("Button pressed\n");
+		//printf("Button pressed \n");
 
 		//Send slave command code to send data length
 		commandcode = 0x51;
-		I2C_MasterSendData(&I2C1Handle, &commandcode, 1, SLAVE_ADDRESS);
+		I2C_MasterSendData(&I2C1Handle, &commandcode, 1, SLAVE_ADDRESS, I2C_ENABLE_SR);
 
 		//receive data length from slave
-		I2C_MasterReceiveData(&I2C1Handle, &len, 1, SLAVE_ADDRESS);
+		I2C_MasterReceiveData(&I2C1Handle, &len, 1, SLAVE_ADDRESS, I2C_ENABLE_SR);
 
 		//Send slave command code to send data
 		commandcode = 0x52;
-		I2C_MasterSendData(&I2C1Handle, &commandcode, 1, SLAVE_ADDRESS);
+		I2C_MasterSendData(&I2C1Handle, &commandcode, 1, SLAVE_ADDRESS, I2C_ENABLE_SR);
 
 		//receive data from slave
-		I2C_MasterReceiveData(&I2C1Handle, some_data, len, SLAVE_ADDRESS);
+		I2C_MasterReceiveData(&I2C1Handle, some_data, len, SLAVE_ADDRESS, I2C_DISABLE_SR);
 
 		some_data[len] = '\0';
 
