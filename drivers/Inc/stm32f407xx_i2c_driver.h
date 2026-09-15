@@ -27,8 +27,16 @@ typedef struct
  */
 typedef struct
 {
-	I2C_Regdef_t	*pI2Cx;
-	I2C_Config_t	I2C_Config;
+	I2C_Regdef_t		*pI2Cx;
+	I2C_Config_t		I2C_Config;
+	uint8_t			*pTxBuffer;
+	uint8_t 			*pRxBuffer;
+	uint32_t			TxLen;
+	uint32_t			RxLen;
+	uint8_t			TxRxState;	//refer to I2C Application states
+	uint8_t			DevAddr;
+	uint32_t			RxSize;
+	uint8_t			Sr;			//store repeated start value
 
 }I2C_Handle_t;
 
@@ -54,6 +62,9 @@ void I2C_DeInit(I2C_Regdef_t *pI2Cx);
  */
 void I2C_MasterSendData(I2C_Handle_t *pI2CHandle, uint8_t *pTxbuffer, uint32_t Len, uint8_t SlaveAddr, uint8_t Sr);
 void I2C_MasterReceiveData(I2C_Handle_t *pI2CHandle, uint8_t *pRxbuffer, uint32_t Len, uint8_t SlaveAddr, uint8_t Sr);
+
+uint8_t I2C_MasterSendDataIT(I2C_Handle_t *pI2CHandle, uint8_t *pTxbuffer, uint32_t Len, uint8_t SlaveAddr, uint8_t Sr);
+uint8_t I2C_MasterReceiveDataIT(I2C_Handle_t *pI2CHandle, uint8_t *pRxbuffer, uint32_t Len, uint8_t SlaveAddr, uint8_t Sr);
 
 /*
  * Peripheral control I2C
@@ -100,7 +111,7 @@ void I2C_ApplicationEventCallback(I2C_Handle_t *pI2CHandle, uint8_t AppEvent);
  * I2C related status flags definitions
  */
 #define I2C_FLAG_TXE   		( 1 << I2C_SR1_TXE)
-#define I2C_FLAG_RXNE   	( 1 << I2C_SR1_RXNE)
+#define I2C_FLAG_RXNE   		( 1 << I2C_SR1_RXNE)
 #define I2C_FLAG_SB			( 1 << I2C_SR1_SB)
 #define I2C_FLAG_OVR  		( 1 << I2C_SR1_OVR)
 #define I2C_FLAG_AF   		( 1 << I2C_SR1_AF)
@@ -114,5 +125,12 @@ void I2C_ApplicationEventCallback(I2C_Handle_t *pI2CHandle, uint8_t AppEvent);
 
 #define I2C_DISABLE_SR  	RESET
 #define I2C_ENABLE_SR   	SET
+
+/*
+ * I2C Application states
+ */
+#define	I2C_READY			0
+#define I2C_BUSY_IN_RX		1
+#define I2C_BUSY_IN_TX		2
 
 #endif /* INC_STM32F407XX_I2C_DRIVER_H_ */
