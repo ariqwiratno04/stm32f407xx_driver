@@ -52,8 +52,6 @@ void I2C_PeriClockControl(I2C_Regdef_t *pI2Cx, uint8_t EnorDi);
 /*
  * Initialize and De-initialize
  */
-uint32_t RCC_GetPCLK1Value(void);
-uint32_t RCC_GetPLLOutputClock(void);
 void I2C_Init(I2C_Handle_t *pI2CHandle);
 void I2C_DeInit(I2C_Regdef_t *pI2Cx);
 
