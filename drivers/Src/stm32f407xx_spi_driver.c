@@ -312,7 +312,7 @@ void SPI_IRQInterruptConfig(uint8_t IRQNumber, uint8_t EnorDi)
 		}else if(IRQNumber >= 64 && IRQNumber < 96){
 
 			//program to ISER2 Register to enable
-			*NVIC_ISER2 |= (1 << (IRQNumber % 64));
+			*NVIC_ISER2 |= (1 << (IRQNumber % 32));
 		}
 	}else{
 		if(IRQNumber <= 31){
@@ -324,12 +324,12 @@ void SPI_IRQInterruptConfig(uint8_t IRQNumber, uint8_t EnorDi)
 		}else if(IRQNumber > 31 && IRQNumber < 64){
 
 			//program to ICER1 Register to enable
-			*NVIC_ICER1 |= (1 << IRQNumber);
+			*NVIC_ICER1 |= (1 << IRQNumber % 32);
 
 		}else if(IRQNumber >= 64 && IRQNumber < 96){
 
 			//program to ICER2 Register to enable
-			*NVIC_ICER2 |= (1 << IRQNumber);
+			*NVIC_ICER2 |= (1 << IRQNumber % 32);
 
 		}
 	}
