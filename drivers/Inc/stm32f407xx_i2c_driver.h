@@ -66,6 +66,9 @@ void I2C_MasterReceiveData(I2C_Handle_t *pI2CHandle, uint8_t *pRxbuffer, uint32_
 uint8_t I2C_MasterSendDataIT(I2C_Handle_t *pI2CHandle, uint8_t *pTxbuffer, uint32_t Len, uint8_t SlaveAddr, uint8_t Sr);
 uint8_t I2C_MasterReceiveDataIT(I2C_Handle_t *pI2CHandle, uint8_t *pRxbuffer, uint32_t Len, uint8_t SlaveAddr, uint8_t Sr);
 
+void I2C_CloseReceiveData(I2C_Handle_t *pI2CHandle);
+void I2C_CloseSendData(I2C_Handle_t *pI2CHandle);
+
 /*
  * Peripheral control I2C
  */
@@ -78,6 +81,7 @@ void I2C_IRQInterruptConfig(uint8_t IRQNumber, uint8_t EnorDi);
 void I2C_IRQPriorityConfig(uint8_t IRQNumber, uint32_t IRQPriority);
 void I2C_EV_IRQHandling(I2C_Handle_t *pI2CHandle);
 void I2C_ER_IRQHandling(I2C_Handle_t *pI2CHandle);
+
 
 /*
  * Other
@@ -127,6 +131,15 @@ void I2C_ApplicationEventCallback(I2C_Handle_t *pI2CHandle, uint8_t AppEvent);
 
 #define I2C_DISABLE_SR  	RESET
 #define I2C_ENABLE_SR   	SET
+
+/*
+ * I2C application events macros
+ */
+#define I2C_EV_TX_CMPLT		0
+#define I2C_EV_RX_CMPLT		1
+#define I2C_EV_STOP			2
+#define I2C_EV_DATA_REQ		3
+#define I2C_EV_DATA_RCV		4
 
 /*
  * I2C Application states
