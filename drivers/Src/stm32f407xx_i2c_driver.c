@@ -9,7 +9,7 @@
 
 //static specific I2C function
 static void I2C_GenerateStartCondition(I2C_Regdef_t *pI2Cx);
-static void I2C_GenerateStopCondition(I2C_Regdef_t *pI2Cx);
+void I2C_GenerateStopCondition(I2C_Regdef_t *pI2Cx);
 static void I2C_ClearADDRFlag(I2C_Handle_t *pI2CHandle);
 static void I2C_ExecuteAddressPhaseWrite(I2C_Regdef_t *pI2Cx, uint8_t SlaveAddr);
 static void I2C_ExecuteAddressPhaseRead(I2C_Regdef_t *pI2Cx, uint8_t SlaveAddr);
@@ -696,7 +696,7 @@ static void I2C_GenerateStartCondition(I2C_Regdef_t *pI2Cx)
 	pI2Cx->CR1 |= (1 << I2C_CR1_START);
 }
 
-static void I2C_GenerateStopCondition(I2C_Regdef_t *pI2Cx)
+void I2C_GenerateStopCondition(I2C_Regdef_t *pI2Cx)
 {
 	pI2Cx->CR1 |= (1 << I2C_CR1_STOP);
 }

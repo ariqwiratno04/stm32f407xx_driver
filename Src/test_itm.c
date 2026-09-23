@@ -9,6 +9,8 @@
 #include <stdint.h>
 #include <stdio.h>
 
+extern void initialise_monitor_handles(void);
+
 void delay(void)
 {
 	for(uint32_t i = 0; i < 500000; i++);
@@ -28,6 +30,8 @@ void Button_Inits(void){
 }
 
 int main(void){
+
+	initialise_monitor_handles();
 
 	Button_Inits();
 
