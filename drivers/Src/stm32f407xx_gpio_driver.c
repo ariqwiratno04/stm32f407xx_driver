@@ -80,7 +80,7 @@ void GPIO_PeriClockControl(GPIO_Regdef_t *pGPIOx, uint8_t EnorDi)
 				GPIOH_PCLK_DI();
 			}
 			else if(pGPIOx == GPIOI){
-				GPIOI_PCLK_EN();
+				GPIOI_PCLK_DI();
 			}
 		}
 }
@@ -109,9 +109,8 @@ void GPIO_Init(GPIO_Handle_t *pGPIOHandle)
 	//1. Configure the mode
 	if(pGPIOHandle->GPIO_PinConfig.GPIO_PinMode <= GPIO_MODE_ANALOG) //Non-interrupt mode
 	{
-		temp = (pGPIOHandle->GPIO_PinConfig.GPIO_PinMode << (2 * pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber)); //set register and shifting by 2 bit times pin number
-		pGPIOHandle->pGPIOx->MODER &= ~(0x03 << pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber);	//clearing register
-		pGPIOHandle->pGPIOx->MODER |= temp;		//set register
+		pGPIOHandle->pGPIOx->MODER &= ~(0x03U << (2U * pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber));	//clearing register
+		pGPIOHandle->pGPIOx->MODER |= ((uint32_t)pGPIOHandle->GPIO_PinConfig.GPIO_PinMode << (2U * pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber));		//set register
 	}else
 	{
 		if(pGPIOHandle->GPIO_PinConfig.GPIO_PinMode == GPIO_MODE_IT_FT){
@@ -151,21 +150,21 @@ void GPIO_Init(GPIO_Handle_t *pGPIOHandle)
 
 	//2. Configure the speed
 	temp = (pGPIOHandle->GPIO_PinConfig.GPIO_PinSpeed << (2 * pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber));
-	pGPIOHandle->pGPIOx->OSPEEDR &= ~(0x03 << pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber);		//clearing register
+	pGPIOHandle->pGPIOx->OSPEEDR &= ~(0x03U << (2U * pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber));		//clearing register
 	pGPIOHandle->pGPIOx->OSPEEDR |= temp; 		//set register
 
 	temp = 0;
 
 	//3. Configure the pullup or pulldown setting
 	temp = (pGPIOHandle->GPIO_PinConfig.GPIO_PinPuPdControl << (2 * pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber));
-	pGPIOHandle->pGPIOx->PUPDR &= ~(0x03 << pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber);		//clearing register
+	pGPIOHandle->pGPIOx->PUPDR &= ~(0x03U << (2U * pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber));		//clearing register
 	pGPIOHandle->pGPIOx->PUPDR |= temp;			//set register
 
 	temp = 0;
 
 	//4. Configure the output type
 	temp = (pGPIOHandle->GPIO_PinConfig.GPIO_PinOPType << pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber);
-	pGPIOHandle->pGPIOx->OTYPER &= ~(0x03 << pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber);		//clearing register
+	pGPIOHandle->pGPIOx->OTYPER &= ~(1U << pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber);		//clearing register
 	pGPIOHandle->pGPIOx->OTYPER |= temp;		//set register
 
 	temp = 0;

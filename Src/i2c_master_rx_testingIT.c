@@ -18,13 +18,13 @@
 #define MY_ADDRESS		0x61
 #define	SLAVE_ADDRESS 	0x68
 
-extern void initialise_monitor_handles(void);
+//extern void initialise_monitor_handles(void);
 
 //create Rx buffer
 uint8_t some_data[32];
 
 //Flag variable
-uint8_t rxComplt = RESET;
+volatile uint8_t rxComplt = RESET;
 
 I2C_Handle_t I2C1Handle;
 
@@ -86,13 +86,13 @@ int main(void){
 	uint8_t commandcode;
 	uint8_t len;
 
-	initialise_monitor_handles();
+	//initialise_monitor_handles();
 
 	//I2C pin and Button init
 	Button_Inits();
 	I2C1_GPIOInits();
 	I2C1_Inits();
-	//printf("Init done \n");
+	printf("Init done \n");
 
 	//I2C IRQ configurations
 	I2C_IRQInterruptConfig(IRQ_I2C1_EV,ENABLE);
@@ -109,7 +109,7 @@ int main(void){
 		//Wait button press
 		while(! GPIO_ReadFromInputPin(GPIOA, GPIO_PIN_NO_0));
 		delay();
-		//printf("Button pressed \n");
+		printf("Button pressed \n");
 
 		//Send slave command code to send data length
 		commandcode = 0x51;
@@ -159,10 +159,10 @@ void I2C_ApplicationEventCallback(I2C_Handle_t *pI2CHandle,uint8_t AppEv)
 {
      if(AppEv == I2C_EV_TX_CMPLT)
      {
-    	 printf("Tx is completed\n");
+    	printf("Tx is completed\n");
      }else if (AppEv == I2C_EV_RX_CMPLT)
      {
-    	 printf("Rx is completed\n");
+    	printf("Rx is completed\n");
     	 rxComplt = SET;
      }else if (AppEv == I2C_ERROR_AF)
      {

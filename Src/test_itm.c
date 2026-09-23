@@ -9,7 +9,7 @@
 #include <stdint.h>
 #include <stdio.h>
 
-extern void initialise_monitor_handles(void);
+//extern void initialise_monitor_handles(void);
 
 void delay(void)
 {
@@ -31,7 +31,7 @@ void Button_Inits(void){
 
 int main(void){
 
-	initialise_monitor_handles();
+	//initialise_monitor_handles();
 
 	Button_Inits();
 
