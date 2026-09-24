@@ -64,6 +64,7 @@ void I2C_Init(I2C_Handle_t *pI2CHandle){
 	pI2CHandle->pI2Cx->CR1 = tempreg;
 
 	//Config FREQ register CR2
+	tempreg = 0;
 	tempreg |= RCC_GetPCLK1Value() / 1000000U;
 	pI2CHandle->pI2Cx->CR2 = (tempreg & 0x3F);
 
@@ -346,6 +347,17 @@ static void I2C_MasterHandleRXNEInterrupt(I2C_Handle_t *pI2CHandle)
 	}
 }
 
+void I2C_SlaveSendData(I2C_Regdef_t *pI2C, uint8_t data)
+{
+
+	pI2C->DR = data;
+}
+
+uint8_t I2C_SlaveReceiveData(I2C_Regdef_t *pI2C)
+{
+	return (uint8_t) pI2C->DR;
+}
+
 
 /*
  * Peripheral control I2C
@@ -505,14 +517,14 @@ void I2C_EV_IRQHandling(I2C_Handle_t *pI2CHandle)
 			if(pI2CHandle->TxRxState == I2C_BUSY_IN_TX)
 			{
 				I2C_MasterHandleTXEInterrupt(pI2CHandle);
-			}else
+			}
+		}else
+		{
+			//Slave mode
+			//make sure that the slave is really in transmitter mode
+			if(pI2CHandle->pI2Cx->SR2 & ( 1 << I2C_SR2_TRA))
 			{
-				//Slave mode
-				//make sure that the slave is really in transmitter mode
-				if(pI2CHandle->pI2Cx->SR2 & ( 1 << I2C_SR2_TRA))
-				{
-					I2C_ApplicationEventCallback(pI2CHandle,I2C_EV_DATA_REQ);
-			    }
+				I2C_ApplicationEventCallback(pI2CHandle,I2C_EV_DATA_REQ);
 			}
 		}
 	}
@@ -699,6 +711,31 @@ static void I2C_GenerateStartCondition(I2C_Regdef_t *pI2Cx)
 void I2C_GenerateStopCondition(I2C_Regdef_t *pI2Cx)
 {
 	pI2Cx->CR1 |= (1 << I2C_CR1_STOP);
+}
+
+void I2C_SlaveEnableDisableCallbackEvents(I2C_Regdef_t *pI2Cx, uint8_t EnorDi)
+{
+	if(EnorDi == ENABLE)
+	{
+		//Implement the code to enable ITBUFEN Control Bit
+		pI2Cx->CR2 |= ( 1 << I2C_CR2_ITBUFEN);
+
+		//Implement the code to enable ITEVFEN Control Bit
+		pI2Cx->CR2 |= ( 1 << I2C_CR2_ITEVTEN);
+
+		//Implement the code to enable ITERREN Control Bit
+		pI2Cx->CR2 |= ( 1 << I2C_CR2_ITERREN);
+	}else
+	{
+		//Implement the code to disable ITBUFEN Control Bit
+		pI2Cx->CR2 &= ~( 1 << I2C_CR2_ITBUFEN);
+
+		//Implement the code to disable ITEVFEN Control Bit
+		pI2Cx->CR2 &= ~( 1 << I2C_CR2_ITEVTEN);
+
+		//Implement the code to disable ITERREN Control Bit
+		pI2Cx->CR2 &= ~( 1 << I2C_CR2_ITERREN);
+	}
 }
 
 static void I2C_ExecuteAddressPhaseWrite(I2C_Regdef_t *pI2Cx, uint8_t SlaveAddr)

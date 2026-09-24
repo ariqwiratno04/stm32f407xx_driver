@@ -67,6 +67,9 @@ uint8_t I2C_MasterReceiveDataIT(I2C_Handle_t *pI2CHandle, uint8_t *pRxbuffer, ui
 void I2C_CloseReceiveData(I2C_Handle_t *pI2CHandle);
 void I2C_CloseSendData(I2C_Handle_t *pI2CHandle);
 
+void I2C_SlaveSendData(I2C_Regdef_t *pI2C, uint8_t data);
+uint8_t I2C_SlaveReceiveData(I2C_Regdef_t *pI2C);
+
 /*
  * Peripheral control I2C
  */
@@ -87,6 +90,8 @@ void I2C_ER_IRQHandling(I2C_Handle_t *pI2CHandle);
 uint8_t I2C_GetFlagStatus(I2C_Regdef_t *pI2Cx, uint32_t FlagName);
 void I2C_ManageAcking(I2C_Regdef_t *pI2Cx, uint8_t EnorDi);
 void I2C_GenerateStopCondition(I2C_Regdef_t *pI2Cx);
+
+void I2C_SlaveEnableDisableCallbackEvents(I2C_Regdef_t *pI2Cx, uint8_t EnorDi);
 
 /*
  * Application callback
