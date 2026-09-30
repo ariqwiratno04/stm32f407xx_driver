@@ -511,7 +511,7 @@ typedef struct{
 #define IRQ_NO_EXTI2			8
 #define IRQ_NO_EXTI3			9
 #define IRQ_NO_EXTI4			10
-#define IRQ_NO_EXTI9_5		23
+#define IRQ_NO_EXTI9_5			23
 #define IRQ_NO_EXTI15_10		40
 
 #define IRQ_SPI1				35
@@ -522,6 +522,13 @@ typedef struct{
 #define IRQ_I2C1_ER			32
 #define IRQ_I2C2_EV			33
 #define IRQ_I2C2_ER			34
+
+#define IRQ_USART1			37
+#define IRQ_USART2			38
+#define IRQ_USART3			39
+#define IRQ_UART4			52
+#define IRQ_UART5			53
+#define IRQ_USART6			71
 
 /*
  * macros for all the possible priority levels
