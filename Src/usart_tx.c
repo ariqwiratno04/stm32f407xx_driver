@@ -11,15 +11,15 @@
 #include <stdio.h>
 
 /*
- * PC6 -> USART1_TX
- * PC7 -> USART1_RX
+ * PC6 -> USART6_TX
+ * PC7 -> USART6_RX
  */
 
 USART_Handle_t	USART1Handle;
 
 char msg[1024] = "UART Tx Test... \n\r";
 
-void USART1_GPIOInit(void)
+void USART6_GPIOInit(void)
 {
 	GPIO_Handle_t USART1Pins;
 
@@ -30,16 +30,16 @@ void USART1_GPIOInit(void)
 	USART1Pins.GPIO_PinConfig.GPIO_PinSpeed			= GPIO_SPEED_HIGH;
 	USART1Pins.GPIO_PinConfig.GPIO_PinPuPdControl 	= GPIO_PIN_PU;
 
-	//USART1_TX
+	//USART6_TX
 	USART1Pins.GPIO_PinConfig.GPIO_PinNumber		= GPIO_PIN_NO_6;
 	GPIO_Init(&USART1Pins);
 
-	//USART1_RX
+	//USART6_RX
 	USART1Pins.GPIO_PinConfig.GPIO_PinNumber		= GPIO_PIN_NO_7;
 	GPIO_Init(&USART1Pins);
 }
 
-void USART1_Init(void)
+void USART6_Init(void)
 {
 	USART1Handle.pUSARTx							= USART6;
 	USART1Handle.USART_Config.USART_Baud			= USART_STD_BAUD_115200;
@@ -74,8 +74,8 @@ void Button_Inits(void){
 int main(void){
 
 	Button_Inits();
-	USART1_GPIOInit();
-	USART1_Init();
+	USART6_GPIOInit();
+	USART6_Init();
 
 	USART_PeripheralControl(USART6, ENABLE);
 
