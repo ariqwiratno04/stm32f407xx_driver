@@ -18,7 +18,7 @@
 #define DS3231_ADDR_YEAR	0x06
 
 #define DS3231_ADDR_CR		0x0E
-#define DS3231_ADDR_CR_ST	0x0F
+#define DS3231_ADDR_ST		0x0F
 
 #define DS3231_24HR_FORMAT	0
 #define DS3231_12HR_FORMAT	1
@@ -35,6 +35,16 @@
 #define FRIDAY				5
 #define SATURDAY			6
 #define SUNDAY				7
+
+/*
+ * I2C config
+ */
+#define DS3231_I2C						I2C1
+#define DS3231_I2C_GPIO_PORT			GPIOB
+#define DS3231_I2C_GPIO_PIN_SCL			GPIO_PIN_NO_6
+#define DS3231_I2C_GPIO_PIN_SDA			GPIO_PIN_NO_7
+#define DS3231_I2C_SPEED				I2C_SCL_SPEED_SM
+#define DS1307_I2C_PUPD					GPIO_NO_PUPD
 
 typedef struct
 {
@@ -54,7 +64,8 @@ typedef struct
 }RTC_time_t;
 
 
-uint8_t DS3231_init(void);
+void ds3231_i2c_config_init(void);
+void ds3231_i2c_gpio_init(void);
 
 void DS3231_set_current_time(RTC_time_t *);
 void DS3231_get_current_time(RTC_time_t *);
