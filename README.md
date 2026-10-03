@@ -1,6 +1,6 @@
 # STM32F407 Bare-Metal Programming
 
-A repository for me learning low-level, bare-metal C programming on the **STM32F407G-DISC1 (STM32F4 Discovery)** board using **STM32CubeIDE**.
+A repository for me learning low-level, bare-metal C programming on the **STM32F407G-DISC1 (STM32F4 Discovery)** board using **STM32CubeIDE** and based on [FastBit Embedded Brain Academy](https://www.udemy.com/course/mastering-microcontroller-with-peripheral-driver-development/?couponCode=KEEPLEARNING).
 
 This project focuses on manipulating memory-mapped registers directly using C pointers, gaining a ground-up understanding of the ARM Cortex-M4 architecture and STM32 peripherals without high-level abstraction libraries like HAL or LL.
 
