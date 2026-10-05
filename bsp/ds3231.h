@@ -20,11 +20,9 @@
 #define DS3231_ADDR_CR		0x0E
 #define DS3231_ADDR_ST		0x0F
 
-#define DS3231_24HR_FORMAT	0
-#define DS3231_12HR_FORMAT	1
-
-#define DS3231_12HR_AM		0
-#define DS3231_12HR_PM		1
+#define TIME_FORMAT_12HRS_AM 	0
+#define TIME_FORMAT_12HRS_PM 	1
+#define TIME_FORMAT_24HRS 		2
 
 #define DS3231_I2C_ADDR		0x68
 
@@ -44,7 +42,7 @@
 #define DS3231_I2C_GPIO_PIN_SCL			GPIO_PIN_NO_6
 #define DS3231_I2C_GPIO_PIN_SDA			GPIO_PIN_NO_7
 #define DS3231_I2C_SPEED				I2C_SCL_SPEED_SM
-#define DS1307_I2C_PUPD					GPIO_NO_PUPD
+#define DS3231_I2C_PUPD					GPIO_NO_PUPD
 
 typedef struct
 {
@@ -52,6 +50,8 @@ typedef struct
 	uint8_t month;
 	uint8_t year;
 	uint8_t day;
+	uint8_t century;
+
 }RTC_date_t;
 
 
@@ -61,17 +61,19 @@ typedef struct
 	uint8_t minutes;
 	uint8_t hours;
 	uint8_t time_format;
+
 }RTC_time_t;
 
+uint8_t ds3231_init(void);
 
 void ds3231_i2c_config_init(void);
 void ds3231_i2c_gpio_init(void);
 
-void DS3231_set_current_time(RTC_time_t *);
-void DS3231_get_current_time(RTC_time_t *);
+void ds3231_set_current_time(RTC_time_t *);
+void ds3231_get_current_time(RTC_time_t *);
 
-void DS3231_set_current_date(RTC_date_t *);
-void DS3231_get_current_date(RTC_date_t *);
+void ds3231_set_current_date(RTC_date_t *);
+void ds3231_get_current_date(RTC_date_t *);
 
 
 #endif /* DS3231_H_ */
