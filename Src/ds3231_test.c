@@ -15,6 +15,7 @@
 #include <stdint.h>
 #include <stdio.h>
 #include "ds3231.h"
+#include "lcd_i2c.h"
 
 void Button_Inits(void){
 
@@ -99,7 +100,10 @@ int main(void)
 	RTC_time_t current_time;
 	RTC_date_t current_date;
 
+	lcd_init();
+
 	printf("RTC test \n");
+	//lcd_print_string("woe...");
 
 	if(ds3231_init())
 	{
@@ -134,11 +138,18 @@ int main(void)
 		if(current_time.time_format != TIME_FORMAT_24HRS){
 			am_pm = (current_time.time_format) ? "PM" : "AM";
 			printf("Current time = %s %s\n",time_to_string(&current_time),am_pm); // 04:25:41 PM
+			lcd_set_cursor(1, 1);
+			lcd_print_string(time_to_string(&current_time));
+			lcd_print_string(am_pm);
 		}else{
 			printf("Current time = %s\n",time_to_string(&current_time)); // 04:25:41
+			lcd_set_cursor(1, 1);
+			lcd_print_string(time_to_string(&current_time));
 		}
 
 	printf("Current date = %s <%s>\n",date_to_string(&current_date), get_day_of_week(current_date.day));
+	lcd_set_cursor(2, 1);
+	lcd_print_string(date_to_string(&current_date));
 	}
 
 	return 0;
