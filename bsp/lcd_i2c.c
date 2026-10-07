@@ -8,6 +8,8 @@
 #include "stm32f407xx.h"
 #include "lcd_i2c.h"
 
+#define BL_ENABLE		ENABLE
+
 I2C_Handle_t lcdi2chandle;
 
 static void write_8bit(uint8_t data);
@@ -141,9 +143,11 @@ void lcd_init(void)
 
 static void write_4bit_data(uint8_t data)
 {
-	//fetch the current pin config
 	uint8_t previous_data;
-	I2C_MasterReceiveData(&lcdi2chandle, &previous_data, 1,  LCD_I2C_ADDR, 0);
+	//fetch the current pin config
+	I2C_MasterReceiveData(&lcdi2chandle, &previous_data, 1,  LCD_I2C_ADDR, 1);
+	if(BL_ENABLE == ENABLE)
+		previous_data |= 0x08;
 
 	uint8_t data_bit = (uint8_t)((previous_data & 0x0B) | ((data & 0x0F) << 4));
 	I2C_MasterSendData(&lcdi2chandle, &data_bit, 1, LCD_I2C_ADDR, 1);
@@ -158,16 +162,18 @@ static void write_8bit(uint8_t data)
 
 static void lcd_enable()
 {
-	//fetch the current pin config
 	uint8_t previous_data;
-	I2C_MasterReceiveData(&lcdi2chandle, &previous_data, 1,  LCD_I2C_ADDR, 0);
+	//fetch the current pin config
+	I2C_MasterReceiveData(&lcdi2chandle, &previous_data, 1,  LCD_I2C_ADDR, 1);
+	if(BL_ENABLE == ENABLE)
+		previous_data |= 0x08;
 
 	uint8_t enable = previous_data | 0x4;
 	uint8_t disable = previous_data & (uint8_t)~0x04U;
 
-	I2C_MasterSendData(&lcdi2chandle, &enable, 1, LCD_I2C_ADDR, 0);
+	I2C_MasterSendData(&lcdi2chandle, &enable, 1, LCD_I2C_ADDR, 1);
 	udelay(10);
-	I2C_MasterSendData(&lcdi2chandle, &disable, 1, LCD_I2C_ADDR, 0);
+	I2C_MasterSendData(&lcdi2chandle, &disable, 1, LCD_I2C_ADDR, 1);
 	udelay(100); //execution time > 37 micro seconds
 }
 
@@ -201,44 +207,56 @@ void lcd_display_return_home(void)
   *   Row Number (1 to 2)
   *   Column Number (1 to 16) Assuming a 2 X 16 characters display
   */
+// void lcd_set_cursor(uint8_t row, uint8_t column)
+// {
+//   column--;
+//   switch (row)
+//   {
+//     case 1:
+//       /* Set cursor to 1st row address and add index*/
+//       lcd_send_command((column |= 0x80));
+//       break;
+//     case 2:
+//       /* Set cursor to 2nd row address and add index*/
+//         lcd_send_command((column |= 0xC0));
+//       break;
+//     case 3:
+//       /* Set cursor to 2nd row address and add index*/
+//     	lcd_send_command((column |= 0xE0));
+//       break;
+//     default:
+//       break;
+//   }
+// }
+
 void lcd_set_cursor(uint8_t row, uint8_t column)
 {
-  column--;
-  switch (row)
-  {
-    case 1:
-      /* Set cursor to 1st row address and add index*/
-      lcd_send_command((column |= 0x80));
-      break;
-    case 2:
-      /* Set cursor to 2nd row address and add index*/
-        lcd_send_command((column |= 0xC0));
-      break;
-    case 3:
-      /* Set cursor to 2nd row address and add index*/
-    	lcd_send_command((column |= 0xE0));
-      break;
-    default:
-      break;
-  }
+    static const uint8_t row_start[] = { 0x00, 0x40, 0x14, 0x54 };
+
+    if (row < 1 || row > 4 || column < 1 || column > 20)
+        return;
+
+    uint8_t address = row_start[row - 1] + (column - 1);
+    lcd_send_command(0x80 | address);
 }
 
 static void RS_bit(uint8_t EnorDi)
 {
-	//fetch the current pin config
 	uint8_t previous_data;
-	I2C_MasterReceiveData(&lcdi2chandle, &previous_data, 1,  LCD_I2C_ADDR, 0);
-
+	//fetch the current pin config
+	I2C_MasterReceiveData(&lcdi2chandle, &previous_data, 1,  LCD_I2C_ADDR, 1);
+	if(BL_ENABLE == ENABLE)
+		previous_data |= 0x08;
 
 	uint8_t enable = 0x1 | previous_data;
 	uint8_t disable = previous_data & (uint8_t)~0x01U;
 
 	if(EnorDi == ENABLE)
 	{
-		I2C_MasterSendData(&lcdi2chandle, &enable, 1, LCD_I2C_ADDR, 0);
+		I2C_MasterSendData(&lcdi2chandle, &enable, 1, LCD_I2C_ADDR, 1);
 	}else
 	{
-		I2C_MasterSendData(&lcdi2chandle, &disable, 1, LCD_I2C_ADDR, 0);
+		I2C_MasterSendData(&lcdi2chandle, &disable, 1, LCD_I2C_ADDR, 1);
 	}
 }
 
@@ -246,7 +264,7 @@ static void BL_bit(uint8_t EnorDi)
 {
 	//fetch the current pin config
 	uint8_t previous_data;
-	I2C_MasterReceiveData(&lcdi2chandle, &previous_data, 1,  LCD_I2C_ADDR, 0);
+	I2C_MasterReceiveData(&lcdi2chandle, &previous_data, 1,  LCD_I2C_ADDR, 1);
 
 
 	uint8_t enable = 0x8 | previous_data;
@@ -254,28 +272,30 @@ static void BL_bit(uint8_t EnorDi)
 
 	if(EnorDi == ENABLE)
 	{
-		I2C_MasterSendData(&lcdi2chandle, &enable, 1, LCD_I2C_ADDR, 0);
+		I2C_MasterSendData(&lcdi2chandle, &enable, 1, LCD_I2C_ADDR, 1);
 	}else
 	{
-		I2C_MasterSendData(&lcdi2chandle, &disable, 1, LCD_I2C_ADDR, 0);
+		I2C_MasterSendData(&lcdi2chandle, &disable, 1, LCD_I2C_ADDR, 1);
 	}
 }
 
 static void RW_bit(uint8_t EnorDi)
 {
-		//fetch the current pin config
+	//fetch the current pin config
 	uint8_t previous_data;
-	I2C_MasterReceiveData(&lcdi2chandle, &previous_data, 1,  LCD_I2C_ADDR, 0);
+	I2C_MasterReceiveData(&lcdi2chandle, &previous_data, 1,  LCD_I2C_ADDR, 1);
+	if(BL_ENABLE == ENABLE)
+		previous_data |= 0x08;
 
 	uint8_t enable = 0x2 | previous_data;
 	uint8_t disable = previous_data & (uint8_t)~0x02U;
 
 	if(EnorDi == ENABLE)
 	{
-		I2C_MasterSendData(&lcdi2chandle, &enable, 1, LCD_I2C_ADDR, 0);
+		I2C_MasterSendData(&lcdi2chandle, &enable, 1, LCD_I2C_ADDR, 1);
 	}else
 	{
-		I2C_MasterSendData(&lcdi2chandle, &disable, 1, LCD_I2C_ADDR, 0);
+		I2C_MasterSendData(&lcdi2chandle, &disable, 1, LCD_I2C_ADDR, 1);
 	}
 }
 

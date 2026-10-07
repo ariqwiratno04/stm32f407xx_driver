@@ -159,7 +159,7 @@ static void ds3231_write(uint8_t value, uint8_t reg_addr)
 	uint8_t tx[2];
 	tx[0] = reg_addr;
 	tx[1] = value;
-	I2C_MasterSendData(&ds3231handle, tx, 2, DS3231_I2C_ADDR, 0);
+	I2C_MasterSendData(&ds3231handle, tx, 2, DS3231_I2C_ADDR, 1);
 
 }
 
@@ -167,7 +167,7 @@ static uint8_t ds3231_read(uint8_t reg_addr)
 {
 	uint8_t data;
 	I2C_MasterSendData(&ds3231handle, &reg_addr, 1, DS3231_I2C_ADDR, 1);
-	I2C_MasterReceiveData(&ds3231handle, &data, 1, DS3231_I2C_ADDR , 0);
+	I2C_MasterReceiveData(&ds3231handle, &data, 1, DS3231_I2C_ADDR , 1);
 
 	return data;
 }

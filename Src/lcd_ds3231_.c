@@ -41,7 +41,7 @@ void init_systick_timer(uint32_t tick_hz)
 
 char* get_day_of_week(uint8_t i)
 {
-	char* days[] = { "Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"};
+	char* days[] = {"Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday",};
 
 	return days[i-1];
 }
@@ -130,15 +130,15 @@ int main(void)
 
 	init_systick_timer(1);
 
-	current_date.day = FRIDAY;
-	current_date.date = 15;
-	current_date.month = 1;
-	current_date.year = 21;
+	current_date.day = WEDNESDAY;
+	current_date.date = 7;
+	current_date.month = 10;
+	current_date.year = 26;
 
-	current_time.hours = 11;
-	current_time.minutes = 59;
-	current_time.seconds = 30;
-	current_time.time_format = TIME_FORMAT_12HRS_PM;
+	current_time.hours = 14;
+	current_time.minutes = 8;
+	current_time.seconds = 10;
+	current_time.time_format = TIME_FORMAT_24HRS;
 
 	ds3231_set_current_date(&current_date);
 	ds3231_set_current_time(&current_time);
